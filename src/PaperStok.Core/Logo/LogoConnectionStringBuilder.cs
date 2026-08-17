@@ -25,7 +25,13 @@ public static class LogoConnectionStringBuilder
             InitialCatalog = profile.DatabaseName,
             Encrypt = profile.EncryptConnection,
             TrustServerCertificate = profile.TrustServerCertificate,
-            ConnectTimeout = 10
+            ConnectTimeout = 10,
+            // PaperStok never writes to Logo Tiger3. This hints the server to
+            // route to a readable secondary when the database is part of an
+            // Always On availability group; it is a no-op otherwise. The
+            // authoritative read-only guarantee is the SQL login's own
+            // permissions (grant it db_datareader only) plus SqlReadOnlyGuard.
+            ApplicationIntent = ApplicationIntent.ReadOnly
         };
 
         if (profile.AuthMode == LogoAuthMode.Windows)

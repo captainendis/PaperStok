@@ -57,7 +57,12 @@
 
                 <Button x:Name="PullStockButton" Content="Stokları Çek" Style="{StaticResource Pa.AccentButton}"
                         Click="PullStock_Click" HorizontalAlignment="Stretch" Margin="0,0,0,8" />
-                <ProgressBar x:Name="BusyBar" IsIndeterminate="True" Height="4" Visibility="Collapsed" />
+                <ProgressBar x:Name="BusyBar" IsIndeterminate="True" Height="4" Visibility="Collapsed" Margin="0,0,0,16" />
+
+                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}">
+                    <Run Text="🔒" />
+                    <Run Text="Salt okunur: PaperStok yalnızca okur, Logo Tiger3 veritabanında hiçbir kayıt eklemez, değiştirmez veya silmez." />
+                </TextBlock>
             </StackPanel>
         </Border>
 

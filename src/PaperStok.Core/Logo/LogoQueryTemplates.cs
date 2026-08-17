@@ -42,15 +42,25 @@ public static class LogoQueryTemplates
         ORDER BY wh.NR, it.CODE;
         """;
 
+    /// <summary>
+    /// Builds the final, ready-to-execute SQL for a profile. Always passes
+    /// the result through <see cref="SqlReadOnlyGuard"/> — PaperStok must
+    /// never issue a query that could write to the Logo Tiger3 database,
+    /// whether the query came from this default template or a profile's
+    /// custom one.
+    /// </summary>
     public static string Build(ConnectionProfile profile)
     {
         var template = string.IsNullOrWhiteSpace(profile.CustomQueryTemplate)
             ? DefaultWarehouseTotalsQuery
             : profile.CustomQueryTemplate;
 
-        return template
+        var sql = template
             .Replace("{FIRM}", profile.FirmSuffix)
             .Replace("{PERIOD}", profile.PeriodSuffix)
             .Replace("{FIRMNO}", profile.FirmNo.ToString());
+
+        SqlReadOnlyGuard.EnsureReadOnly(sql);
+        return sql;
     }
 }

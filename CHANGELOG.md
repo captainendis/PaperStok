@@ -17,3 +17,4 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 - Birden fazla bağlantı profili, DPAPI ile şifreli parola saklama.
 - Ambar/stok filtreleme ve arama, Excel (.xlsx) ve CSV dışa aktarma.
 - PaperAxis marka teması ve Hakkında ekranı.
+- Salt okunur garantisi: her sorgu (varsayılan ve özel) çalıştırılmadan önce `SqlReadOnlyGuard` ile denetlenir, bağlantı `ApplicationIntent=ReadOnly` ile açılır; uygulama Logo Tiger3 veritabanında hiçbir yazma işlemi yapmaz.

@@ -133,6 +133,19 @@ public partial class ConnectionSettingsWindow : Window
             CustomQueryTemplate = string.IsNullOrWhiteSpace(CustomQueryBox.Text) ? null : CustomQueryBox.Text
         };
 
+        // PaperStok is read-only by design: reject any custom query here,
+        // at save time, rather than letting it fail later on "Stokları Çek".
+        try
+        {
+            LogoQueryTemplates.Build(profile);
+        }
+        catch (UnsafeQueryException ex)
+        {
+            error = $"Özel sorgu reddedildi — PaperStok salt okunurdur ve Logo Tiger3 veritabanında hiçbir değişiklik yapmaz.\n{ex.Message}";
+            profile = new ConnectionProfile();
+            return false;
+        }
+
         return true;
     }
 

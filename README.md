@@ -12,6 +12,16 @@ Bir **PaperAxis** ürünüdür. · [paperaxis.com](https://paperaxis.com)
 - Excel (.xlsx) ve CSV (;) olarak dışa aktarma.
 - Kurulum gerektirmez: tek `.exe` dosyası olarak dağıtılır, kayıt defterine yazmaz; ayarlar exe ile aynı klasördeki `profiles.json` dosyasında tutulur.
 
+## Salt okunur garantisi
+
+PaperStok, Logo Tiger3 veritabanında **kesinlikle hiçbir değişiklik yapmaz** — yalnızca okur. Bu, tek bir katmana değil üç bağımsız katmana dayanır:
+
+1. **Kod düzeyi:** Uygulama boyunca veritabanına yalnızca `SELECT` çalıştırılır; `INSERT`/`UPDATE`/`DELETE` gibi bir yazma çağrısı kod tabanında hiçbir yerde yoktur.
+2. **Sorgu koruması (`SqlReadOnlyGuard`):** Çalıştırılacak her sorgu — ister varsayılan ambar sorgusu, ister Bağlantı Ayarları'ndan girilen özel SQL — çalıştırılmadan önce otomatik olarak denetlenir. Sorgu `SELECT`/`WITH` ile başlamıyorsa, birden fazla ifade içeriyorsa (`;` ile zincirleme) veya yazma/DDL anahtar kelimesi (`INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `EXEC`, `TRUNCATE`, `sp_`/`xp_` çağrıları vb.) barındırıyorsa, çalıştırılmadan reddedilir ve kullanıcıya Türkçe açık bir hata gösterilir.
+3. **Bağlantı düzeyi:** Bağlantı dizesine `ApplicationIntent=ReadOnly` eklenir.
+
+Bu üç katman uygulamanın kendisini korur; **asıl ve nihai güvence** ise Logo Tiger3 tarafında PaperStok'un kullandığı SQL Server girişine yalnızca okuma yetkisi (`db_datareader` rolü, `SELECT` dışında hiçbir yetki) verilmesidir. Metin tabanlı bir denetim teorik olarak bir string literal içindeki talihsiz bir kelimeyle (ör. `'... INTO ...'` geçen bir stok adı) yanlış pozitif üretebilir; asıl garantiyi veren veritabanı iznidir, uygulama katmanı ek bir emniyet kemeridir.
+
 ## Gereksinimler
 
 - Çalıştırmak için: Windows 10/11 (x64). Ek bir .NET kurulumu gerekmez — dağıtım paketi self-contained'dır.

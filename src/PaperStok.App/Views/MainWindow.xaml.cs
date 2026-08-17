@@ -126,6 +126,14 @@ public partial class MainWindow : Window
             RebuildWarehouseFilter();
             StatusText.Text = $"{result.Count} kayıt çekildi — {SelectedProfile?.Name}.";
         }
+        catch (UnsafeQueryException ex)
+        {
+            MessageBox.Show(this,
+                $"Sorgu reddedildi — PaperStok salt okunurdur ve Logo Tiger3 veritabanında hiçbir değişiklik yapmaz.\n\n{ex.Message}\n\n" +
+                "Bağlantı Ayarları içindeki özel SQL şablonunu düzeltin.",
+                "Salt Okunur Kısıtı", MessageBoxButton.OK, MessageBoxImage.Warning);
+            StatusText.Text = "Stok çekme başarısız oldu.";
+        }
         catch (SqlException ex)
         {
             MessageBox.Show(this,
