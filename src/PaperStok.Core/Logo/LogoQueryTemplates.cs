@@ -13,7 +13,7 @@ namespace PaperStok.Core.Logo;
 ///
 /// Every table and column this query touches — L_CAPIWHOUSE (NR, NAME,
 /// FIRMNR), LV_&lt;firm&gt;_&lt;period&gt;_STINVTOT (STOCKREF, INVENNO, ONHAND,
-/// RESERVED, ACTPORDER), LG_&lt;firm&gt;_ITEMS (CODE, NAME, CARDTYPE, ACTIVE,
+/// RESERVED, ACTPORDER), LG_&lt;firm&gt;_ITEMS (CODE, NAME, ACTIVE,
 /// UNITSETREF) and LG_&lt;firm&gt;_UNITSETL (UNITSETREF, MAINUNIT, CODE) — was
 /// confirmed field-by-field against a live customer database via
 /// INFORMATION_SCHEMA.COLUMNS, run as a read-only discovery query through
@@ -56,7 +56,7 @@ public static class LogoQueryTemplates
         INNER JOIN LG_{FIRM}_ITEMS it ON it.LOGICALREF = iv.STOCKREF
         INNER JOIN L_CAPIWHOUSE wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
         LEFT JOIN LG_{FIRM}_UNITSETL un ON un.UNITSETREF = it.UNITSETREF AND un.MAINUNIT = 1
-        WHERE it.CARDTYPE = 1 AND it.ACTIVE = 0 AND iv.INVENNO <> -1
+        WHERE it.ACTIVE = 0 AND iv.INVENNO <> -1
         GROUP BY wh.NR, wh.NAME, it.CODE, it.NAME, un.CODE
         HAVING SUM(iv.ONHAND) <> 0 OR SUM(iv.RESERVED) <> 0
         ORDER BY wh.NR, it.CODE;
