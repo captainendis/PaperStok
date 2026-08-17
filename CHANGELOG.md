@@ -12,6 +12,7 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 - Sorgu, github.com/ugurozpinar/Logo deposundaki alan bazlı Logo şema dökümüne göre ikinci kez çapraz kontrol edildi ve düzeltildi: birim çözümlemesi `UNITSETF.UINFO` (var olmayan bir kolon) yerine `UNITSETL.MAINUNIT`'e taşındı; `STINVTOT.ORDERED` (var olmayan bir kolon) yerine `ACTPORDER` kullanıldı; `STINVTOT.INVENNO <> -1` filtresi eklendi ("tüm ambarlar" özet satırını dışlamak için).
 ### Düzeltildi
 - "Yeni Bağlantı" penceresi açılır açılmaz çöken hata giderildi: XAML'de öndeğer seçili `SqlAuthRadio`, henüz oluşturulmamış `UsernameBox`/`PasswordBox` alanlarına erişen bir olay işleyicisini pencere daha kurulmadan (InitializeComponent sırasında) tetikliyordu. Ayrıca beklenmeyen bir hata uygulamayı sessizce çökertmek yerine artık bir hata penceresi gösteriyor.
+- "Specified cast is not valid" hatası giderildi: sonuç satırları `SqlDataReader.GetDecimal()`/`GetInt32()` gibi katı tipli okuyucularla değil, esnek `Convert.ToXxx(...)` dönüşümüyle okunuyor artık. Logo'nun `ONHAND`/`RESERVED` gibi alanları belgelenmiş tipi "Double" (SQL `float`) — kesin `decimal` bekleyen eski kod bu yüzden gerçek bir Logo veritabanında da patlardı.
 
 ## [0.1.0] - 2026-08-17
 

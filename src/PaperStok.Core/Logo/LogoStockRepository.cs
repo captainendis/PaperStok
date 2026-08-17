@@ -36,17 +36,43 @@ public sealed class LogoStockRepository
         {
             results.Add(new WarehouseStockRow
             {
-                WarehouseNo = reader.GetInt32(reader.GetOrdinal("WarehouseNo")),
-                WarehouseName = reader.GetString(reader.GetOrdinal("WarehouseName")).Trim(),
-                ItemCode = reader.GetString(reader.GetOrdinal("ItemCode")).Trim(),
-                ItemName = reader.GetString(reader.GetOrdinal("ItemName")).Trim(),
-                Unit = reader.GetString(reader.GetOrdinal("Unit")).Trim(),
-                OnHand = reader.GetDecimal(reader.GetOrdinal("OnHand")),
-                Reserved = reader.GetDecimal(reader.GetOrdinal("Reserved")),
-                OnOrder = reader.GetDecimal(reader.GetOrdinal("OnOrder"))
+                WarehouseNo = GetInt32(reader, "WarehouseNo"),
+                WarehouseName = GetString(reader, "WarehouseName"),
+                ItemCode = GetString(reader, "ItemCode"),
+                ItemName = GetString(reader, "ItemName"),
+                Unit = GetString(reader, "Unit"),
+                OnHand = GetDecimal(reader, "OnHand"),
+                Reserved = GetDecimal(reader, "Reserved"),
+                OnOrder = GetDecimal(reader, "OnOrder")
             });
         }
 
         return results;
+    }
+
+    // Logo's own numeric columns aren't always SQL `decimal`/`int` — e.g.
+    // LG_STINVTOT.ONHAND is documented as Delphi "Double" (SQL `float`), and
+    // a custom query template can return practically any numeric SQL type.
+    // SqlDataReader.GetDecimal()/GetInt32() are strict — they throw
+    // InvalidCastException ("Specified cast is not valid.") unless the
+    // column's SQL type matches exactly. Reading the boxed value and
+    // converting leniently handles int/float/real/decimal/numeric/money
+    // alike, whatever the real installation's column types turn out to be.
+    private static string GetString(SqlDataReader reader, string column)
+    {
+        var ordinal = reader.GetOrdinal(column);
+        return reader.IsDBNull(ordinal) ? "" : Convert.ToString(reader.GetValue(ordinal))?.Trim() ?? "";
+    }
+
+    private static int GetInt32(SqlDataReader reader, string column)
+    {
+        var ordinal = reader.GetOrdinal(column);
+        return reader.IsDBNull(ordinal) ? 0 : Convert.ToInt32(reader.GetValue(ordinal));
+    }
+
+    private static decimal GetDecimal(SqlDataReader reader, string column)
+    {
+        var ordinal = reader.GetOrdinal(column);
+        return reader.IsDBNull(ordinal) ? 0m : Convert.ToDecimal(reader.GetValue(ordinal));
     }
 }
