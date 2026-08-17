@@ -59,6 +59,19 @@ public sealed class ConnectionProfile
     /// <summary>Varsayılan sorgunun stok toplamlarını LG_ tablosundan mı LV_ görünümünden mü okuyacağı.</summary>
     public StockSourceKind StockSource { get; set; } = StockSourceKind.View;
 
+    /// <summary>
+    /// Doluysa, yukarıdaki sunucuya bağlanılır ama Logo tabloları doğrudan
+    /// yerel veritabanından değil, o sunucuda tanımlı bu adlı SQL Server
+    /// linked server üzerinden dört parçalı ad ile (LinkedServerName.
+    /// LinkedServerDatabase.dbo.&lt;tablo&gt;) okunur — ör. gerçek Logo
+    /// veritabanı başka bir sunucuda olup buraya linked server ile
+    /// bağlandığında. Boş bırakılırsa normal yerel bağlantı kullanılır.
+    /// </summary>
+    public string? LinkedServerName { get; set; }
+
+    /// <summary>LinkedServerName doluyken zorunlu: linked server üzerindeki uzak veritabanı adı.</summary>
+    public string? LinkedServerDatabase { get; set; }
+
     public string FirmSuffix => FirmNo.ToString("000");
     public string PeriodSuffix => PeriodNo.ToString("00");
 }

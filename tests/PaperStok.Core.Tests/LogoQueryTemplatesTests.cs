@@ -26,6 +26,29 @@ public class LogoQueryTemplatesTests
         Assert.DoesNotContain("{PERIOD}", sql);
         Assert.DoesNotContain("{FIRMNO}", sql);
         Assert.DoesNotContain("{STINVTOT_PREFIX}", sql);
+        Assert.DoesNotContain("{DB_PREFIX}", sql);
+        // No linked server configured: table references stay unqualified (local database).
+        Assert.Contains("FROM LV_003_01_STINVTOT", sql);
+    }
+
+    [Fact]
+    public void Build_QualifiesTablesWithLinkedServerWhenConfigured()
+    {
+        var profile = new ConnectionProfile
+        {
+            FirmNo = 3,
+            PeriodNo = 1,
+            LinkedServerName = "UZAK_SUNUCU",
+            LinkedServerDatabase = "TIGER3"
+        };
+
+        var sql = LogoQueryTemplates.Build(profile);
+
+        Assert.Contains("FROM [UZAK_SUNUCU].[TIGER3].dbo.LV_003_01_STINVTOT", sql);
+        Assert.Contains("[UZAK_SUNUCU].[TIGER3].dbo.LG_003_ITEMS", sql);
+        Assert.Contains("[UZAK_SUNUCU].[TIGER3].dbo.L_CAPIWHOUSE", sql);
+        Assert.Contains("[UZAK_SUNUCU].[TIGER3].dbo.LG_003_UNITSETL", sql);
+        Assert.DoesNotContain("{DB_PREFIX}", sql);
     }
 
     [Fact]

@@ -45,6 +45,26 @@
         <TextBlock Text="Veritabanı Adı" Margin="0,0,0,4" />
         <TextBox x:Name="DatabaseBox" Margin="0,0,0,12" />
 
+        <TextBlock Text="Linked Server (ops.)" Margin="0,0,0,4" />
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Linked Server Adı" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,4" />
+                <TextBox x:Name="LinkedServerNameBox" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Uzak Veritabanı Adı" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,4" />
+                <TextBox x:Name="LinkedServerDatabaseBox" />
+            </StackPanel>
+        </Grid>
+        <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,12">
+            Yukarıdaki sunucuya bağlanıp Logo tablolarını doğrudan değil, o sunucuda tanımlı bir SQL Server linked server üzerinden okumak için doldurun (ör. gerçek Logo veritabanı başka bir sunucuda olup buraya linked server ile erişiliyorsa). Boş bırakılırsa normal yerel bağlantı kullanılır.
+        </TextBlock>
+
         <TextBlock Text="Kimlik Doğrulama" Margin="0,0,0,4" />
         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
             <RadioButton x:Name="SqlAuthRadio" Content="SQL Server" GroupName="Auth" IsChecked="True"
@@ -107,8 +127,9 @@
             <StackPanel Margin="0,8,0,0">
                 <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,6">
                     Logo kurulumunuz standart şemadan farklıysa varsayılan sorguyu burada
-                    değiştirebilirsiniz. {FIRM}, {PERIOD}, {FIRMNO} ve {STINVTOT_PREFIX} (yukarıdaki
-                    Stok Kaynağı seçimine göre LG veya LV) yer tutucuları otomatik doldurulur.
+                    değiştirebilirsiniz. {FIRM}, {PERIOD}, {FIRMNO}, {STINVTOT_PREFIX} (yukarıdaki
+                    Stok Kaynağı seçimine göre LG veya LV) ve {DB_PREFIX} (Linked Server dolduysa
+                    dört parçalı ad ön eki, boşsa boş) yer tutucuları otomatik doldurulur.
                     Boş bırakılırsa PaperStok'un varsayılan sorgusu kullanılır.
                 </TextBlock>
                 <TextBlock x:Name="CustomQueryActiveText" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold"

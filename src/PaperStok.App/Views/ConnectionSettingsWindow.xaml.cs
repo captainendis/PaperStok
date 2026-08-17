@@ -32,6 +32,8 @@ public partial class ConnectionSettingsWindow : Window
             ServerBox.Text = existingProfile.ServerAddress;
             PortBox.Text = existingProfile.Port?.ToString() ?? "";
             DatabaseBox.Text = existingProfile.DatabaseName;
+            LinkedServerNameBox.Text = existingProfile.LinkedServerName ?? "";
+            LinkedServerDatabaseBox.Text = existingProfile.LinkedServerDatabase ?? "";
             SqlAuthRadio.IsChecked = existingProfile.AuthMode == LogoAuthMode.SqlServer;
             WindowsAuthRadio.IsChecked = existingProfile.AuthMode == LogoAuthMode.Windows;
             UsernameBox.Text = existingProfile.Username;
@@ -94,6 +96,15 @@ public partial class ConnectionSettingsWindow : Window
             error = "Veritabanı adı zorunludur.";
             return false;
         }
+
+        var linkedServerName = LinkedServerNameBox.Text.Trim();
+        var linkedServerDatabase = LinkedServerDatabaseBox.Text.Trim();
+        if (!string.IsNullOrEmpty(linkedServerName) != !string.IsNullOrEmpty(linkedServerDatabase))
+        {
+            error = "Linked Server kullanılacaksa hem Linked Server Adı hem Uzak Veritabanı Adı doldurulmalıdır.";
+            return false;
+        }
+
         if (!int.TryParse(FirmNoBox.Text, out var firmNo) || firmNo <= 0)
         {
             error = "Firma No pozitif bir sayı olmalıdır.";
@@ -145,6 +156,8 @@ public partial class ConnectionSettingsWindow : Window
             ServerAddress = ServerBox.Text.Trim(),
             Port = port,
             DatabaseName = DatabaseBox.Text.Trim(),
+            LinkedServerName = string.IsNullOrEmpty(linkedServerName) ? null : linkedServerName,
+            LinkedServerDatabase = string.IsNullOrEmpty(linkedServerDatabase) ? null : linkedServerDatabase,
             AuthMode = authMode,
             Username = UsernameBox.Text.Trim(),
             ProtectedPassword = protectedPassword,

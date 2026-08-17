@@ -39,6 +39,15 @@ namespace PaperStok.Core.Logo;
 /// (ITEMS, UNITSETL) are plain master-data tables, not periodically
 /// recalculated aggregates, so LG_ is fine for those regardless.
 ///
+/// A profile can also point at a Logo database reachable only through a SQL
+/// Server linked server rather than the database PaperStok connects to
+/// directly: set ConnectionProfile.LinkedServerName (and LinkedServerDatabase)
+/// and every table reference below gets a four-part-name prefix
+/// (LinkedServerName.LinkedServerDatabase.dbo.) instead of resolving locally.
+/// This still runs as an ordinary qualified SELECT — not OPENQUERY/OPENROWSET,
+/// which SqlReadOnlyGuard blocks outright — so it stays within what the guard
+/// can actually verify.
+///
 /// Heavily customized Logo installations can still differ, so every profile
 /// can override this template via ConnectionProfile.CustomQueryTemplate —
 /// the placeholders below are the only contract PaperStok relies on.
@@ -60,10 +69,10 @@ public static class LogoQueryTemplates
             SUM(iv.RESERVED)    AS Reserved,
             SUM(iv.ACTPORDER)   AS OnOrder,
             CASE WHEN it.ACTIVE = 0 THEN 1 ELSE 0 END AS IsActive
-        FROM {STINVTOT_PREFIX}_{FIRM}_{PERIOD}_STINVTOT iv
-        INNER JOIN LG_{FIRM}_ITEMS it ON it.LOGICALREF = iv.STOCKREF
-        INNER JOIN L_CAPIWHOUSE wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
-        LEFT JOIN LG_{FIRM}_UNITSETL un ON un.UNITSETREF = it.UNITSETREF AND un.MAINUNIT = 1
+        FROM {DB_PREFIX}{STINVTOT_PREFIX}_{FIRM}_{PERIOD}_STINVTOT iv
+        INNER JOIN {DB_PREFIX}LG_{FIRM}_ITEMS it ON it.LOGICALREF = iv.STOCKREF
+        INNER JOIN {DB_PREFIX}L_CAPIWHOUSE wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
+        LEFT JOIN {DB_PREFIX}LG_{FIRM}_UNITSETL un ON un.UNITSETREF = it.UNITSETREF AND un.MAINUNIT = 1
         WHERE iv.INVENNO <> -1
         GROUP BY wh.NR, wh.NAME, it.CODE, it.NAME, un.CODE, it.ACTIVE
         HAVING SUM(iv.ONHAND) <> 0 OR SUM(iv.RESERVED) <> 0
@@ -84,8 +93,12 @@ public static class LogoQueryTemplates
             : profile.CustomQueryTemplate;
 
         var stinvtotPrefix = profile.StockSource == StockSourceKind.Table ? "LG" : "LV";
+        var dbPrefix = string.IsNullOrWhiteSpace(profile.LinkedServerName)
+            ? ""
+            : $"[{profile.LinkedServerName}].[{profile.LinkedServerDatabase}].dbo.";
 
         var sql = template
+            .Replace("{DB_PREFIX}", dbPrefix)
             .Replace("{STINVTOT_PREFIX}", stinvtotPrefix)
             .Replace("{FIRM}", profile.FirmSuffix)
             .Replace("{PERIOD}", profile.PeriodSuffix)

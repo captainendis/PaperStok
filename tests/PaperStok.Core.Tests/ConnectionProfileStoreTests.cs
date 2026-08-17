@@ -39,7 +39,9 @@ public class ConnectionProfileStoreTests
                 ProtectedPassword = "already-protected-base64",
                 FirmNo = 1,
                 PeriodNo = 1,
-                StockSource = StockSourceKind.Table
+                StockSource = StockSourceKind.Table,
+                LinkedServerName = "UZAK_SUNUCU",
+                LinkedServerDatabase = "TIGER3"
             };
 
             store.Save([profile]);
@@ -51,6 +53,8 @@ public class ConnectionProfileStoreTests
             Assert.Equal("already-protected-base64", loaded[0].ProtectedPassword);
             Assert.Equal(LogoAuthMode.SqlServer, loaded[0].AuthMode);
             Assert.Equal(StockSourceKind.Table, loaded[0].StockSource);
+            Assert.Equal("UZAK_SUNUCU", loaded[0].LinkedServerName);
+            Assert.Equal("TIGER3", loaded[0].LinkedServerDatabase);
         }
         finally
         {
@@ -71,6 +75,7 @@ public class ConnectionProfileStoreTests
 
             Assert.Single(loaded);
             Assert.Equal(StockSourceKind.View, loaded[0].StockSource);
+            Assert.Null(loaded[0].LinkedServerName);
         }
         finally
         {
