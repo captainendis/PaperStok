@@ -18,7 +18,7 @@ public class LogoQueryTemplatesTests
 
         var sql = LogoQueryTemplates.Build(profile);
 
-        Assert.Contains("LG_003_01_STINVTOT", sql);
+        Assert.Contains("LV_003_01_STINVTOT", sql);
         Assert.Contains("LG_003_ITEMS", sql);
         Assert.Contains("wh.FIRMNR = 3", sql);
         Assert.DoesNotContain("{FIRM}", sql);

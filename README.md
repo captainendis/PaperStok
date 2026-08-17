@@ -6,7 +6,7 @@ Bir **PaperAxis** ürünüdür. · [paperaxis.com](https://paperaxis.com)
 
 ## Özellikler
 
-- Logo Tiger3 Enterprise veritabanına doğrudan (MSSQL) bağlanır; firma/dönem numarasına göre `LG_<firma>_<dönem>_STINVTOT` tablosundan ambar bazlı stok toplamlarını okur.
+- Logo Tiger3 Enterprise veritabanına doğrudan (MSSQL) bağlanır; firma/dönem numarasına göre `LV_<firma>_<dönem>_STINVTOT` görünümünden ambar bazlı stok toplamlarını okur.
 - Birden fazla bağlantı profili kaydedebilir (SQL Server veya Windows kimlik doğrulaması); parolalar diskte DPAPI ile şifreli tutulur.
 - Ambar ve stok kodu/adına göre filtreleme, arama.
 - **Ambar Raporu**: birden fazla ambarı aynı raporda görüntüleme, seçtiğiniz ambarları tek bir sütun altında birleştirme (ör. "Geçici Depo" stoğunu "Merkez"e ekleme), ürünleri arayıp seçerek filtreleme; rapor hem her ürün için satır toplamını hem her ambar sütunu için toplamı gösterir. Raporu adlandırıp kaydedip daha sonra tekrar çalıştırabilirsiniz.
@@ -28,7 +28,7 @@ Bu üç katman uygulamanın kendisini korur; **asıl ve nihai güvence** ise Log
 - Çalıştırmak için: Windows 10/11 (x64). Ek bir .NET kurulumu gerekmez — dağıtım paketi self-contained'dır.
 - Geliştirmek için: .NET 8 SDK (Windows Desktop iş yükü dahil — Windows'ta varsayılan .NET 8 SDK kurulumunda gelir).
 
-Varsayılan ambar stok sorgusu (`PaperStok.Core/Logo/LogoQueryTemplates.cs`), dokunduğu her tablo ve kolonla (`L_CAPIWHOUSE.NR/NAME/FIRMNR`, `STINVTOT.STOCKREF/INVENNO/ONHAND/RESERVED/ACTPORDER`, `ITEMS.CODE/NAME/CARDTYPE/ACTIVE/UNITSETREF`, `UNITSETL.CODE/UNITSETREF/MAINUNIT`) birlikte **gerçek bir müşteri veritabanına karşı `INFORMATION_SCHEMA.COLUMNS` ile doğrulandı**. Bu süreçte iki yazılı kaynağın ([logoisortagim.com.tr](https://logoisortagim.com.tr/blog-logo-veritabani-tablolari.html) ve [ugurozpinar/Logo](https://github.com/ugurozpinar/Logo)) yanıldığı iki nokta ortaya çıktı: ambar tablosu `L_CAPIDEF` değil `L_CAPIWHOUSE`'dur, ve birim adı `UNITSETF` değil `UNITSETL`'dendir. Yine de müşteriye özel Logo kurulumlarında alan adları farklılaşabilir; böyle bir durumda Bağlantı Ayarları ekranındaki "Gelişmiş: Özel Ambar Sorgusu" alanından ortamınıza göre uyarlayın.
+Varsayılan ambar stok sorgusu (`PaperStok.Core/Logo/LogoQueryTemplates.cs`), dokunduğu her tablo ve kolonla (`L_CAPIWHOUSE.NR/NAME/FIRMNR`, `STINVTOT.STOCKREF/INVENNO/ONHAND/RESERVED/ACTPORDER`, `ITEMS.CODE/NAME/CARDTYPE/ACTIVE/UNITSETREF`, `UNITSETL.CODE/UNITSETREF/MAINUNIT`) birlikte **gerçek bir müşteri veritabanına karşı `INFORMATION_SCHEMA.COLUMNS` ile doğrulandı**. Bu süreçte iki yazılı kaynağın ([logoisortagim.com.tr](https://logoisortagim.com.tr/blog-logo-veritabani-tablolari.html) ve [ugurozpinar/Logo](https://github.com/ugurozpinar/Logo)) yanıldığı noktalar ortaya çıktı: ambar tablosu `L_CAPIDEF` değil `L_CAPIWHOUSE`'dur, birim adı `UNITSETF` değil `UNITSETL`'dendir. Ayrıca bu kurulumda `LG_<firma>_<dönem>_STINVTOT` tablosu hiç güncellenmiyordu (boştu); gerçek veri, aynı kolon yapısına sahip **`LV_<firma>_<dönem>_STINVTOT` görünümünden** geliyor — sorgu bunu kullanır. Müşteriye özel Logo kurulumlarında hem alan adları hem `LG_`/`LV_` ayrımı farklılaşabilir; böyle bir durumda Bağlantı Ayarları ekranındaki "Gelişmiş: Özel Ambar Sorgusu" alanından ortamınıza göre uyarlayın.
 
 ## Kurulum
 

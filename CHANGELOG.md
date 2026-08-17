@@ -19,6 +19,7 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 - "Specified cast is not valid" hatası giderildi: sonuç satırları `SqlDataReader.GetDecimal()`/`GetInt32()` gibi katı tipli okuyucularla değil, esnek `Convert.ToXxx(...)` dönüşümüyle okunuyor artık. Logo'nun `ONHAND`/`RESERVED` gibi alanları belgelenmiş tipi "Double" (SQL `float`) — kesin `decimal` bekleyen eski kod bu yüzden gerçek bir Logo veritabanında da patlardı.
 - "Invalid object name 'L_CAPIDEF'" hatası giderildi: gerçek bir müşteri veritabanına karşı çalıştırılan salt okunur bir keşif sorgusu, ambar tablosunun `L_CAPIDEF` değil `L_CAPIWHOUSE` olduğunu kesin olarak gösterdi (iki yazılı kaynağın iddiasının aksine). Sorgu buna göre düzeltildi.
 - Varsayılan sorgunun tüm tablo/kolonları (`L_CAPIWHOUSE`, `STINVTOT`, `ITEMS`, `UNITSETL`) aynı gerçek veritabanına karşı `INFORMATION_SCHEMA.COLUMNS` ile tek tek doğrulandı; hiçbir düzeltme gerekmedi.
+- Ambarlar boş/sıfır geliyordu: bu kurulumda `LG_<firma>_<dönem>_STINVTOT` tablosu hiç güncellenmiyormuş (toplam güncelleme işi çalışmıyor). Aynı kolon yapısına sahip `LV_<firma>_<dönem>_STINVTOT` görünümü gerçek zamanlı veriyi tutuyor — varsayılan sorgu `LG_` yerine `LV_` kullanacak şekilde düzeltildi.
 
 ## [0.1.0] - 2026-08-17
 

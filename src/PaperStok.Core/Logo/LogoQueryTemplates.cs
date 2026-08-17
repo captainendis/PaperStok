@@ -12,16 +12,25 @@ namespace PaperStok.Core.Logo;
 /// Enterprise database.
 ///
 /// Every table and column this query touches — L_CAPIWHOUSE (NR, NAME,
-/// FIRMNR), LG_&lt;firm&gt;_&lt;period&gt;_STINVTOT (STOCKREF, INVENNO, ONHAND,
+/// FIRMNR), LV_&lt;firm&gt;_&lt;period&gt;_STINVTOT (STOCKREF, INVENNO, ONHAND,
 /// RESERVED, ACTPORDER), LG_&lt;firm&gt;_ITEMS (CODE, NAME, CARDTYPE, ACTIVE,
 /// UNITSETREF) and LG_&lt;firm&gt;_UNITSETL (UNITSETREF, MAINUNIT, CODE) — was
 /// confirmed field-by-field against a live customer database via
 /// INFORMATION_SCHEMA.COLUMNS, run as a read-only discovery query through
-/// PaperStok itself. That live check also caught two things two independent
+/// PaperStok itself. That live check also caught things two independent
 /// written sources (logoisortagim.com.tr and github.com/ugurozpinar/Logo)
 /// got wrong for this installation: the warehouse table is L_CAPIWHOUSE,
 /// not L_CAPIDEF (which doesn't exist there — "Invalid object name"), and
 /// LG_UNITSETF has no UINFO column (the unit code lives on UNITSETL instead).
+///
+/// STINVTOT specifically reads from the LV_ prefix, not LG_: on this
+/// installation LG_&lt;firm&gt;_&lt;period&gt;_STINVTOT exists but is never
+/// populated (the "totals recalculation" job that would maintain it isn't
+/// run), while LV_&lt;firm&gt;_&lt;period&gt;_STINVTOT is a live view with the
+/// identical column set that computes current on-hand/reserved quantities
+/// on the fly — confirmed by comparing row counts between the two. Other
+/// tables (ITEMS, UNITSETL) are plain master-data tables, not periodically
+/// recalculated aggregates, so LG_ is fine for those.
 ///
 /// Heavily customized Logo installations can still differ, so every profile
 /// can override this template via ConnectionProfile.CustomQueryTemplate —
@@ -43,7 +52,7 @@ public static class LogoQueryTemplates
             SUM(iv.ONHAND)      AS OnHand,
             SUM(iv.RESERVED)    AS Reserved,
             SUM(iv.ACTPORDER)   AS OnOrder
-        FROM LG_{FIRM}_{PERIOD}_STINVTOT iv
+        FROM LV_{FIRM}_{PERIOD}_STINVTOT iv
         INNER JOIN LG_{FIRM}_ITEMS it ON it.LOGICALREF = iv.STOCKREF
         INNER JOIN L_CAPIWHOUSE wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
         LEFT JOIN LG_{FIRM}_UNITSETL un ON un.UNITSETREF = it.UNITSETREF AND un.MAINUNIT = 1
