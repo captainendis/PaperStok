@@ -91,17 +91,22 @@ public partial class ConnectionSettingsWindow : Window
             error = "Sunucu adresi zorunludur.";
             return false;
         }
-        if (string.IsNullOrWhiteSpace(DatabaseBox.Text))
-        {
-            error = "Veritabanı adı zorunludur.";
-            return false;
-        }
-
         var linkedServerName = LinkedServerNameBox.Text.Trim();
         var linkedServerDatabase = LinkedServerDatabaseBox.Text.Trim();
         if (!string.IsNullOrEmpty(linkedServerName) != !string.IsNullOrEmpty(linkedServerDatabase))
         {
             error = "Linked Server kullanılacaksa hem Linked Server Adı hem Uzak Veritabanı Adı doldurulmalıdır.";
+            return false;
+        }
+
+        // Normal olarak zorunlu: bağlanılan sunucudaki hangi veritabanına
+        // düşüleceğini belirler. Linked Server doluyken sorgular zaten
+        // LinkedServerAdı.UzakVeritabanı.dbo.<tablo> ile tam nitelenir, bu
+        // yüzden yerel veritabanı seçimi anlamsızlaşır — boş bırakılabilir
+        // (SQL Server oturumun varsayılan veritabanına bağlanır).
+        if (string.IsNullOrWhiteSpace(DatabaseBox.Text) && string.IsNullOrEmpty(linkedServerName))
+        {
+            error = "Veritabanı adı zorunludur.";
             return false;
         }
 

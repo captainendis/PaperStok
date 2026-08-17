@@ -42,7 +42,7 @@
             </StackPanel>
         </Grid>
 
-        <TextBlock Text="Veritabanı Adı" Margin="0,0,0,4" />
+        <TextBlock Text="Veritabanı Adı (Linked Server doluysa ops.)" Margin="0,0,0,4" />
         <TextBox x:Name="DatabaseBox" Margin="0,0,0,12" />
 
         <TextBlock Text="Linked Server (ops.)" Margin="0,0,0,4" />
