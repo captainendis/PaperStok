@@ -55,6 +55,8 @@
                     <StackPanel>
                         <TextBlock Text="Firma / Dönem" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,2" />
                         <TextBlock x:Name="FirmPeriodText" Text="—" FontFamily="{StaticResource Pa.FontMono}" />
+                        <TextBlock x:Name="CustomQueryWarningText" Text="⚠ Özel sorgu aktif" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{StaticResource Pa.Danger}" Margin="0,4,0,0" Visibility="Collapsed" />
                     </StackPanel>
                 </Border>
 

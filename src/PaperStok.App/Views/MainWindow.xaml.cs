@@ -52,6 +52,9 @@ public partial class MainWindow : Window
     private void UpdateFirmPeriodText()
     {
         FirmPeriodText.Text = SelectedProfile is { } p ? $"{p.FirmSuffix} / {p.PeriodSuffix}" : "—";
+        CustomQueryWarningText.Visibility = !string.IsNullOrWhiteSpace(SelectedProfile?.CustomQueryTemplate)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void ProfileCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

@@ -45,6 +45,9 @@ public partial class StockReportWindow : Window
         ReportCombo.ItemsSource = _definitions;
 
         Title = $"PaperStok — Ambar Raporu ({profile.Name})";
+
+        if (!string.IsNullOrWhiteSpace(profile.CustomQueryTemplate))
+            StatusText.Text = "⚠ Bu profilde özel bir sorgu tanımlı — Verileri Yenile onu kullanır, varsayılan sorguyu değil.";
     }
 
     private async void Refresh_Click(object sender, RoutedEventArgs e) => await PullDataAsync();

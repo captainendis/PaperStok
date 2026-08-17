@@ -4,6 +4,7 @@
  * or distribution of this file is strictly prohibited.
  */
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Data.SqlClient;
 using PaperStok.Core.Logo;
@@ -39,6 +40,8 @@ public partial class ConnectionSettingsWindow : Window
             EncryptCheck.IsChecked = existingProfile.EncryptConnection;
             TrustCertCheck.IsChecked = existingProfile.TrustServerCertificate;
             CustomQueryBox.Text = existingProfile.CustomQueryTemplate ?? "";
+            if (!string.IsNullOrWhiteSpace(existingProfile.CustomQueryTemplate))
+                AdvancedExpander.IsExpanded = true;
             PasswordHintText.Visibility = Visibility.Visible;
         }
 
@@ -59,6 +62,15 @@ public partial class ConnectionSettingsWindow : Window
         UsernameBox.IsEnabled = isSqlAuth;
         PasswordBox.IsEnabled = isSqlAuth;
     }
+
+    private void CustomQueryBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        CustomQueryActiveText.Visibility = string.IsNullOrWhiteSpace(CustomQueryBox.Text)
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+    }
+
+    private void ResetCustomQuery_Click(object sender, RoutedEventArgs e) => CustomQueryBox.Clear();
 
     private bool TryBuildProfile(out ConnectionProfile profile, out string error)
     {

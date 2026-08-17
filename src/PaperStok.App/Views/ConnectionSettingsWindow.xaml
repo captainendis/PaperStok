@@ -82,16 +82,21 @@
             <CheckBox x:Name="TrustCertCheck" Content="Sunucu sertifikasına güven" IsChecked="True" />
         </StackPanel>
 
-        <Expander Header="Gelişmiş: Özel Ambar Sorgusu (SQL)" Margin="0,0,0,12">
+        <Expander x:Name="AdvancedExpander" Header="Gelişmiş: Özel Ambar Sorgusu (SQL)" Margin="0,0,0,12">
             <StackPanel Margin="0,8,0,0">
                 <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,6">
                     Logo kurulumunuz standart şemadan farklıysa varsayılan sorguyu burada
                     değiştirebilirsiniz. {FIRM}, {PERIOD} ve {FIRMNO} yer tutucuları otomatik doldurulur.
                     Boş bırakılırsa PaperStok'un varsayılan sorgusu kullanılır.
                 </TextBlock>
+                <TextBlock x:Name="CustomQueryActiveText" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold"
+                           Foreground="{StaticResource Pa.Danger}" Margin="0,0,0,6" Visibility="Collapsed"
+                           Text="⚠ Özel sorgu aktif — bu profille yapılan her Stokları Çek/Verileri Yenile bu kutudaki sorguyu kullanır, varsayılanı değil." />
                 <TextBox x:Name="CustomQueryBox" AcceptsReturn="True" TextWrapping="Wrap"
                          FontFamily="{StaticResource Pa.FontMono}" Height="120"
-                         VerticalScrollBarVisibility="Auto" />
+                         VerticalScrollBarVisibility="Auto" TextChanged="CustomQueryBox_TextChanged" />
+                <Button Content="Sıfırla (varsayılana dön)" Style="{StaticResource Pa.SecondaryButton}"
+                        Click="ResetCustomQuery_Click" HorizontalAlignment="Left" Margin="0,8,0,0" />
             </StackPanel>
         </Expander>
 
