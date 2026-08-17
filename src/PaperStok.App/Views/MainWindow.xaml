@@ -95,6 +95,7 @@
                     <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <TextBox x:Name="SearchBox" Grid.Column="0" Margin="0,0,8,0"
@@ -104,9 +105,12 @@
                           SelectionChanged="Filter_Changed" />
                 <ComboBox x:Name="StatusFilterCombo" Grid.Column="2" Margin="0,0,8,0"
                           SelectionChanged="Filter_Changed" />
-                <Button Grid.Column="3" Content="Excel'e Aktar" Style="{StaticResource Pa.SecondaryButton}"
+                <Button Grid.Column="3" Content="Sütunları Sığdır" Style="{StaticResource Pa.SecondaryButton}"
+                        Click="AutoFitColumns_Click" Margin="0,0,8,0"
+                        ToolTip="Sütun genişliklerini içeriğe göre bir kerelik ayarlar; sonrasında elle de değiştirebilirsiniz. Sütunları göstermek/gizlemek için tabloya sağ tıklayın." />
+                <Button Grid.Column="4" Content="Excel'e Aktar" Style="{StaticResource Pa.SecondaryButton}"
                         Click="ExportExcel_Click" Margin="0,0,8,0" />
-                <Button Grid.Column="4" Content="CSV'ye Aktar" Style="{StaticResource Pa.SecondaryButton}"
+                <Button Grid.Column="5" Content="CSV'ye Aktar" Style="{StaticResource Pa.SecondaryButton}"
                         Click="ExportCsv_Click" />
             </Grid>
 

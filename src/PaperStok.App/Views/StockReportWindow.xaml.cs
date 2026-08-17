@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Win32;
+using PaperStok.App;
 using PaperStok.App.Converters;
 using PaperStok.App.Reporting;
 using PaperStok.Core.Export;
@@ -264,7 +265,10 @@ public partial class StockReportWindow : Window
 
         var rowsWithTotal = new List<StockReportRow>(result.Rows) { result.TotalsRow };
         PivotGrid.ItemsSource = rowsWithTotal;
+        DataGridColumnTools.AttachVisibilityMenu(PivotGrid);
     }
+
+    private void AutoFitColumns_Click(object sender, RoutedEventArgs e) => DataGridColumnTools.AutoFitColumns(PivotGrid);
 
     private void ReportCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {

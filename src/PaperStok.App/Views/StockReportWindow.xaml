@@ -104,11 +104,15 @@
         <Grid Grid.Row="2" Margin="0,0,0,12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" x:Name="BuildReportButton" Content="Raporu Oluştur" Style="{StaticResource Pa.AccentButton}"
                     Click="BuildReport_Click" />
-            <TextBlock Grid.Column="1" x:Name="StatusText" Text="Önce Verileri Yenile'ye basın." VerticalAlignment="Center" Margin="12,0,0,0" Foreground="{StaticResource Pa.Ink500}" />
+            <Button Grid.Column="1" Content="Sütunları Sığdır" Style="{StaticResource Pa.SecondaryButton}"
+                    Click="AutoFitColumns_Click" Margin="8,0,0,0"
+                    ToolTip="Sütun genişliklerini içeriğe göre bir kerelik ayarlar; sonrasında elle de değiştirebilirsiniz. Sütunları göstermek/gizlemek için tabloya sağ tıklayın." />
+            <TextBlock Grid.Column="2" x:Name="StatusText" Text="Önce Verileri Yenile'ye basın." VerticalAlignment="Center" Margin="12,0,0,0" Foreground="{StaticResource Pa.Ink500}" />
         </Grid>
 
         <!-- Pivot tablo -->

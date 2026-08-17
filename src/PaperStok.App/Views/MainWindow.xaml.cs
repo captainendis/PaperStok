@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Win32;
+using PaperStok.App;
 using PaperStok.Core;
 using PaperStok.Core.Export;
 using PaperStok.Core.Logo;
@@ -36,6 +37,7 @@ public partial class MainWindow : Window
         _rowsView = CollectionViewSource.GetDefaultView(_rows);
         _rowsView.Filter = FilterRow;
         StockGrid.ItemsSource = _rowsView;
+        DataGridColumnTools.AttachVisibilityMenu(StockGrid);
 
         WarehouseFilterCombo.ItemsSource = new List<WarehouseFilterItem> { WarehouseFilterItem.All };
         WarehouseFilterCombo.SelectedIndex = 0;
@@ -258,6 +260,8 @@ public partial class MainWindow : Window
     private void Filter_Changed(object sender, System.Windows.Controls.TextChangedEventArgs e) => _rowsView.Refresh();
 
     private void Filter_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => _rowsView.Refresh();
+
+    private void AutoFitColumns_Click(object sender, RoutedEventArgs e) => DataGridColumnTools.AutoFitColumns(StockGrid);
 
     private async void ExportExcel_Click(object sender, RoutedEventArgs e) => await ExportAsync(new ExcelStockExporter());
 

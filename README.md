@@ -11,6 +11,7 @@ Bir **PaperAxis** ürünüdür. · [paperaxis.com](https://paperaxis.com)
 - Birden fazla profili aynı anda işaretleyip "Stokları Çek"e basarak farklı sunucudaki/firmadaki Logo kurulumlarının stoklarını tek tabloda birlikte görüntüleme (her satırda hangi profilden geldiğini gösteren "Kaynak" sütunuyla).
 - Ambar ve stok kodu/adına göre filtreleme, arama; aktif/pasif stok kartlarını "Aktif + Pasif", "Yalnızca Aktif" veya "Yalnızca Pasif" olarak seçme.
 - **Ambar Raporu**: birden fazla ambarı aynı raporda görüntüleme, seçtiğiniz ambarları tek bir sütun altında birleştirme (ör. "Geçici Depo" stoğunu "Merkez"e ekleme), ürünleri arayıp seçerek filtreleme; rapor hem her ürün için satır toplamını hem her ambar sütunu için toplamı gösterir. Raporu adlandırıp kaydedip daha sonra tekrar çalıştırabilirsiniz.
+- Tablolarda (ana ekran ve Ambar Raporu) sütunları sağ tıklayarak gösterme/gizleme; "Sütunları Sığdır" butonuyla sütun genişliklerini içeriğe göre bir kerelik ayarlama (sonrasında elle de yeniden boyutlandırılabilir).
 - Excel (.xlsx) ve CSV (;) olarak dışa aktarma.
 - Kurulum gerektirmez: tek `.exe` dosyası olarak dağıtılır, kayıt defterine yazmaz; ayarlar exe ile aynı klasördeki `profiles.json` ve `reports.json` dosyalarında tutulur.
 
