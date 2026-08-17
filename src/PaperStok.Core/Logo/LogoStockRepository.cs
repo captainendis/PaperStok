@@ -44,7 +44,8 @@ public sealed class LogoStockRepository
                 OnHand = GetDecimal(reader, "OnHand"),
                 Reserved = GetDecimal(reader, "Reserved"),
                 OnOrder = GetDecimal(reader, "OnOrder"),
-                IsActive = GetOptionalBool(reader, "IsActive", defaultValue: true)
+                IsActive = GetOptionalBool(reader, "IsActive", defaultValue: true),
+                SourceProfileName = profile.Name
             });
         }
 

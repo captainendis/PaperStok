@@ -41,9 +41,18 @@
 
         <Border DockPanel.Dock="Left" Width="280" Background="White" BorderBrush="{StaticResource Pa.Paper200}" BorderThickness="0,0,1,0">
             <StackPanel Margin="16">
-                <TextBlock Text="Bağlantı Profili" FontWeight="SemiBold" Margin="0,0,0,6" />
-                <ComboBox x:Name="ProfileCombo" DisplayMemberPath="Name"
-                          SelectionChanged="ProfileCombo_SelectionChanged" Margin="0,0,0,8" />
+                <TextBlock Text="Bağlantı Profilleri" FontWeight="SemiBold" Margin="0,0,0,4" />
+                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,6">
+                    İşaretlediğiniz profillerin stokları "Stokları Çek" ile aynı tabloda birlikte gelir — farklı sunucudaki/firmadaki Logo kurulumlarını birlikte görmek için birden fazlasını işaretleyin.
+                </TextBlock>
+                <ListBox x:Name="ProfilesListBox" MaxHeight="130" Margin="0,0,0,8" BorderBrush="{StaticResource Pa.Paper200}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                      Checked="ProfileCheck_Changed" Unchecked="ProfileCheck_Changed" Margin="2" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
                     <Button Content="Yeni" Style="{StaticResource Pa.SecondaryButton}" Click="NewProfile_Click" Margin="0,0,6,0" />
@@ -53,8 +62,8 @@
 
                 <Border Background="{StaticResource Pa.Navy50}" CornerRadius="6" Padding="12" Margin="0,0,0,16">
                     <StackPanel>
-                        <TextBlock Text="Firma / Dönem" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,2" />
-                        <TextBlock x:Name="FirmPeriodText" Text="—" FontFamily="{StaticResource Pa.FontMono}" />
+                        <TextBlock Text="Seçili Profiller" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,2" />
+                        <TextBlock x:Name="FirmPeriodText" Text="—" FontFamily="{StaticResource Pa.FontMono}" TextWrapping="Wrap" />
                         <TextBlock x:Name="CustomQueryWarningText" Text="⚠ Özel sorgu aktif" FontSize="11" FontWeight="SemiBold"
                                    Foreground="{StaticResource Pa.Danger}" Margin="0,4,0,0" Visibility="Collapsed" />
                     </StackPanel>
@@ -112,6 +121,7 @@
                     <DataGridTextColumn Header="Sipariş" Binding="{Binding OnOrder, StringFormat={}{0:#,##0.###}}" Width="90" />
                     <DataGridTextColumn Header="Kullanılabilir" Binding="{Binding Available, StringFormat={}{0:#,##0.###}}" Width="110" />
                     <DataGridTextColumn Header="Durum" Binding="{Binding StatusLabel}" Width="70" />
+                    <DataGridTextColumn Header="Kaynak" Binding="{Binding SourceProfileName}" Width="120" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

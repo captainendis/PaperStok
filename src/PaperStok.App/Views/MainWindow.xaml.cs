@@ -21,7 +21,8 @@ public partial class MainWindow : Window
 {
     private readonly ConnectionProfileStore _profileStore = new();
     private readonly LogoStockRepository _repository = new();
-    private readonly ObservableCollection<ConnectionProfile> _profiles = [];
+    private readonly List<ConnectionProfile> _profiles = [];
+    private List<ProfileCheckRow> _profileRows = [];
     private readonly ObservableCollection<WarehouseStockRow> _rows = [];
     private readonly ICollectionView _rowsView;
 
@@ -29,12 +30,8 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        foreach (var profile in _profileStore.Load())
-            _profiles.Add(profile);
-
-        ProfileCombo.ItemsSource = _profiles;
-        if (_profiles.Count > 0)
-            ProfileCombo.SelectedIndex = 0;
+        _profiles.AddRange(_profileStore.Load());
+        RebuildProfileRows();
 
         _rowsView = CollectionViewSource.GetDefaultView(_rows);
         _rowsView.Filter = FilterRow;
@@ -55,18 +52,48 @@ public partial class MainWindow : Window
         UpdateFirmPeriodText();
     }
 
-    private ConnectionProfile? SelectedProfile => ProfileCombo.SelectedItem as ConnectionProfile;
+    /// <summary>The row highlighted in the list — target of Düzenle/Sil, not necessarily checked for pulling.</summary>
+    private ConnectionProfile? CurrentProfile => (ProfilesListBox.SelectedItem as ProfileCheckRow)?.Profile;
+
+    /// <summary>Every profile the user has checked — these are pulled together into one table.</summary>
+    private List<ConnectionProfile> CheckedProfiles => _profileRows.Where(r => r.IsChecked).Select(r => r.Profile).ToList();
+
+    /// <summary>Rebuilds the checklist from _profiles, preserving each surviving profile's checked
+    /// state by name. On first load (nothing has ever been checked), checks just the first profile
+    /// so existing single-installation users see the same behavior as before.</summary>
+    private void RebuildProfileRows()
+    {
+        var wasChecked = _profileRows.ToDictionary(r => r.Profile.Name, r => r.IsChecked, StringComparer.OrdinalIgnoreCase);
+        var isFirstBuild = _profileRows.Count == 0 && wasChecked.Count == 0;
+
+        _profileRows = _profiles
+            .Select(p => new ProfileCheckRow { Profile = p, IsChecked = wasChecked.TryGetValue(p.Name, out var was) && was })
+            .ToList();
+
+        if (isFirstBuild && _profileRows.Count > 0)
+            _profileRows[0].IsChecked = true;
+
+        ProfilesListBox.ItemsSource = null;
+        ProfilesListBox.ItemsSource = _profileRows;
+        UpdateFirmPeriodText();
+    }
 
     private void UpdateFirmPeriodText()
     {
-        FirmPeriodText.Text = SelectedProfile is { } p ? $"{p.FirmSuffix} / {p.PeriodSuffix}" : "—";
-        CustomQueryWarningText.Visibility = !string.IsNullOrWhiteSpace(SelectedProfile?.CustomQueryTemplate)
+        var checkedProfiles = CheckedProfiles;
+        FirmPeriodText.Text = checkedProfiles.Count switch
+        {
+            0 => "—",
+            1 => $"{checkedProfiles[0].Name} ({checkedProfiles[0].FirmSuffix} / {checkedProfiles[0].PeriodSuffix})",
+            _ => $"{checkedProfiles.Count} profil: {string.Join(", ", checkedProfiles.Select(p => p.Name))}"
+        };
+
+        CustomQueryWarningText.Visibility = checkedProfiles.Any(p => !string.IsNullOrWhiteSpace(p.CustomQueryTemplate))
             ? Visibility.Visible
             : Visibility.Collapsed;
     }
 
-    private void ProfileCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        => UpdateFirmPeriodText();
+    private void ProfileCheck_Changed(object sender, RoutedEventArgs e) => UpdateFirmPeriodText();
 
     private void SaveProfiles() => _profileStore.Save(_profiles);
 
@@ -77,15 +104,16 @@ public partial class MainWindow : Window
             return;
 
         _profiles.Add(dialog.Result);
-        ProfileCombo.SelectedItem = dialog.Result;
         SaveProfiles();
+        RebuildProfileRows();
+        ProfilesListBox.SelectedItem = _profileRows.FirstOrDefault(r => r.Profile == dialog.Result);
     }
 
     private void EditProfile_Click(object sender, RoutedEventArgs e)
     {
-        if (SelectedProfile is not { } current)
+        if (CurrentProfile is not { } current)
         {
-            MessageBox.Show(this, "Önce bir bağlantı profili seçin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, "Önce düzenlenecek bir profil seçin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -95,15 +123,16 @@ public partial class MainWindow : Window
 
         var index = _profiles.IndexOf(current);
         _profiles[index] = dialog.Result;
-        ProfileCombo.SelectedItem = dialog.Result;
         SaveProfiles();
+        RebuildProfileRows();
+        ProfilesListBox.SelectedItem = _profileRows.FirstOrDefault(r => r.Profile == dialog.Result);
     }
 
     private void DeleteProfile_Click(object sender, RoutedEventArgs e)
     {
-        if (SelectedProfile is not { } current)
+        if (CurrentProfile is not { } current)
         {
-            MessageBox.Show(this, "Önce bir bağlantı profili seçin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, "Önce silinecek bir profil seçin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -114,64 +143,76 @@ public partial class MainWindow : Window
 
         _profiles.Remove(current);
         SaveProfiles();
-        UpdateFirmPeriodText();
+        RebuildProfileRows();
     }
 
     private async void PullStock_Click(object sender, RoutedEventArgs e)
     {
-        if (SelectedProfile is not { } profile)
+        var profiles = CheckedProfiles;
+        if (profiles.Count == 0)
         {
-            MessageBox.Show(this, "Önce bir bağlantı profili seçin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, "Önce en az bir bağlantı profili işaretleyin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
         SetBusy(true, "Stoklar çekiliyor…");
-        try
-        {
-            var result = await _repository.GetWarehouseTotalsAsync(profile);
 
-            _rows.Clear();
-            foreach (var row in result)
-                _rows.Add(row);
+        var allRows = new List<WarehouseStockRow>();
+        foreach (var profile in profiles)
+        {
+            try
+            {
+                allRows.AddRange(await _repository.GetWarehouseTotalsAsync(profile));
+            }
+            catch (UnsafeQueryException ex)
+            {
+                MessageBox.Show(this,
+                    $"\"{profile.Name}\" profili reddedildi — PaperStok salt okunurdur ve Logo Tiger3 veritabanında hiçbir değişiklik yapmaz.\n\n{ex.Message}\n\n" +
+                    "Bağlantı Ayarları içindeki özel SQL şablonunu düzeltin.",
+                    "Salt Okunur Kısıtı", MessageBoxButton.OK, MessageBoxImage.Warning);
+                SetBusy(false, "Stok çekme başarısız oldu.");
+                return;
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(this,
+                    $"\"{profile.Name}\" profiliyle Logo Tiger3 veritabanına bağlanılamadı veya sorgu çalıştırılamadı.\n\n{ex.Message}\n\n" +
+                    "Firma/Dönem numaralarını ve gerekiyorsa Bağlantı Ayarları içindeki özel SQL şablonunu kontrol edin.",
+                    "Bağlantı Hatası", MessageBoxButton.OK, MessageBoxImage.Error);
+                SetBusy(false, "Stok çekme başarısız oldu.");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"\"{profile.Name}\" profili için beklenmeyen bir hata oluştu:\n\n{ex.Message}", "PaperStok",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                SetBusy(false, "Stok çekme başarısız oldu.");
+                return;
+            }
+        }
 
-            RebuildWarehouseFilter();
-            StatusText.Text = $"{result.Count} kayıt çekildi — {SelectedProfile?.Name}.";
-        }
-        catch (UnsafeQueryException ex)
-        {
-            MessageBox.Show(this,
-                $"Sorgu reddedildi — PaperStok salt okunurdur ve Logo Tiger3 veritabanında hiçbir değişiklik yapmaz.\n\n{ex.Message}\n\n" +
-                "Bağlantı Ayarları içindeki özel SQL şablonunu düzeltin.",
-                "Salt Okunur Kısıtı", MessageBoxButton.OK, MessageBoxImage.Warning);
-            StatusText.Text = "Stok çekme başarısız oldu.";
-        }
-        catch (SqlException ex)
-        {
-            MessageBox.Show(this,
-                $"Logo Tiger3 veritabanına bağlanılamadı veya sorgu çalıştırılamadı.\n\n{ex.Message}\n\n" +
-                "Firma/Dönem numaralarını ve gerekiyorsa Bağlantı Ayarları içindeki özel SQL şablonunu kontrol edin.",
-                "Bağlantı Hatası", MessageBoxButton.OK, MessageBoxImage.Error);
-            StatusText.Text = "Stok çekme başarısız oldu.";
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, $"Beklenmeyen bir hata oluştu:\n\n{ex.Message}", "PaperStok",
-                MessageBoxButton.OK, MessageBoxImage.Error);
-            StatusText.Text = "Stok çekme başarısız oldu.";
-        }
-        finally
-        {
-            SetBusy(false, StatusText.Text);
-        }
+        _rows.Clear();
+        foreach (var row in allRows)
+            _rows.Add(row);
+
+        RebuildWarehouseFilter();
+        var profileNames = string.Join(", ", profiles.Select(p => p.Name));
+        StatusText.Text = $"{allRows.Count} kayıt çekildi — {profileNames}.";
+        SetBusy(false, StatusText.Text);
     }
 
     private void RebuildWarehouseFilter()
     {
+        var distinctSources = _rows.Select(r => r.SourceProfileName).Distinct().Count();
+
         var warehouses = _rows
-            .Select(r => (r.WarehouseNo, r.WarehouseName))
+            .Select(r => (r.SourceProfileName, r.WarehouseNo, r.WarehouseName))
             .Distinct()
-            .OrderBy(w => w.WarehouseNo)
-            .Select(w => new WarehouseFilterItem(w.WarehouseNo, w.WarehouseName))
+            .OrderBy(w => w.SourceProfileName).ThenBy(w => w.WarehouseNo)
+            .Select(w => new WarehouseFilterItem(
+                w.SourceProfileName,
+                w.WarehouseNo,
+                distinctSources > 1 ? $"{w.SourceProfileName} — {w.WarehouseName}" : w.WarehouseName))
             .ToList();
 
         warehouses.Insert(0, WarehouseFilterItem.All);
@@ -192,8 +233,8 @@ public partial class MainWindow : Window
         if (obj is not WarehouseStockRow row)
             return false;
 
-        if (WarehouseFilterCombo.SelectedItem is WarehouseFilterItem { WarehouseNo: { } warehouseNo } &&
-            row.WarehouseNo != warehouseNo)
+        if (WarehouseFilterCombo.SelectedItem is WarehouseFilterItem { WarehouseNo: { } warehouseNo } warehouseFilter &&
+            (row.WarehouseNo != warehouseNo || row.SourceProfileName != warehouseFilter.SourceProfileName))
         {
             return false;
         }
@@ -259,9 +300,10 @@ public partial class MainWindow : Window
 
     private void StockReport_Click(object sender, RoutedEventArgs e)
     {
-        if (SelectedProfile is not { } profile)
+        if (CurrentProfile is not { } profile)
         {
-            MessageBox.Show(this, "Önce bir bağlantı profili seçin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, "Önce listeden bir bağlantı profili seçin (Ambar Raporu tek profille çalışır).", "PaperStok",
+                MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -272,9 +314,17 @@ public partial class MainWindow : Window
 
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
 
-    private sealed record WarehouseFilterItem(int? WarehouseNo, string Label)
+    /// <summary>One checkable connection profile in the sidebar list.</summary>
+    private sealed class ProfileCheckRow
     {
-        public static readonly WarehouseFilterItem All = new(null, "Tüm Ambarlar");
+        public required ConnectionProfile Profile { get; init; }
+        public string Name => Profile.Name;
+        public bool IsChecked { get; set; }
+    }
+
+    private sealed record WarehouseFilterItem(string? SourceProfileName, int? WarehouseNo, string Label)
+    {
+        public static readonly WarehouseFilterItem All = new(null, null, "Tüm Ambarlar");
         public override string ToString() => Label;
     }
 

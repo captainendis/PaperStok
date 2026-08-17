@@ -18,6 +18,10 @@ public sealed class WarehouseStockRow
     public decimal OnOrder { get; set; }
     public bool IsActive { get; set; } = true;
 
+    /// <summary>Bu satırın hangi bağlantı profilinden (Logo kurulumundan) geldiği.
+    /// Birden fazla profil aynı anda çekilip tek tabloda birleştirilebildiği için eklendi.</summary>
+    public string SourceProfileName { get; set; } = "";
+
     /// <summary>Kullanılabilir miktar: eldeki - rezerve edilen.</summary>
     public decimal Available => OnHand - Reserved;
 
