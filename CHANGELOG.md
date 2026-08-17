@@ -27,6 +27,7 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 - Ambarlar boş/sıfır geliyordu: bu kurulumda `LG_<firma>_<dönem>_STINVTOT` tablosu hiç güncellenmiyormuş (toplam güncelleme işi çalışmıyor). Aynı kolon yapısına sahip `LV_<firma>_<dönem>_STINVTOT` görünümü gerçek zamanlı veriyi tutuyor — varsayılan sorgu `LG_` yerine `LV_` kullanacak şekilde düzeltildi.
 - Varsayılan sorgudaki `ITEMS.CARDTYPE = 1` (yalnızca "Ticari Mal") filtresi kaldırıldı; artık tüm stok kartı tipleri listeleniyor.
 - Ambar Raporu'nda "Grup Adı" hücresi düzenlenemiyordu: tema, salt okunur ana ekran tablolarına uygun şekilde tüm `DataGrid`ler için varsayılan olarak `IsReadOnly="True"` uyguluyordu ve "Ambar Grupları" tablosu bunu tek tek geçersiz kılmıyordu — sütun düzeyindeki düzenlenebilirlik ayarı bu yüzden hiç etkili olmuyordu. "Ambar Grupları" tablosu artık `IsReadOnly="False"` ile açıkça düzenlenebilir işaretlendi.
+- Bağlantı Ayarları penceresi ekrana sığmayan yükseklikte açıldığında "Kaydet"/"İptal"/"Bağlantıyı Test Et" butonlarına erişilemiyordu (`SizeToContent="Height"` + `ResizeMode="NoResize"`, kaydırma da yoktu). Pencere artık yeniden boyutlandırılabiliyor, alanlar bir `ScrollViewer` içinde ve buton satırı her zaman altta sabit kalıyor.
 - Varsayılan sorgudaki sabit `ITEMS.ACTIVE = 0` (yalnızca aktif) filtresi kaldırıldı; sorgu artık her satır için `IsActive` bilgisini döndürüyor, aktif/pasif seçimi ekrandaki "Durum" filtresine taşındı.
 
 ## [0.1.0] - 2026-08-17
