@@ -12,6 +12,20 @@ public enum LogoAuthMode
 }
 
 /// <summary>
+/// Which STINVTOT object the default query reads stock totals from. Some
+/// Logo Tiger3 installations keep LG_&lt;firm&gt;_&lt;period&gt;_STINVTOT (the table)
+/// up to date via a totals-recalculation job; others don't run that job, in
+/// which case only LV_&lt;firm&gt;_&lt;period&gt;_STINVTOT (the equivalent live view)
+/// reflects current stock. View is the default because it always reflects
+/// live data regardless of whether that job runs.
+/// </summary>
+public enum StockSourceKind
+{
+    View,
+    Table
+}
+
+/// <summary>
 /// Logo Tiger3 Enterprise MSSQL bağlantısı için kaydedilen bir profil.
 /// Parola diskte her zaman şifreli tutulur (bkz. ConnectionProfileStore).
 /// </summary>
@@ -41,6 +55,9 @@ public sealed class ConnectionProfile
     /// Boş bırakılırsa LogoQueryTemplates.DefaultWarehouseTotalsQuery kullanılır.
     /// </summary>
     public string? CustomQueryTemplate { get; set; }
+
+    /// <summary>Varsayılan sorgunun stok toplamlarını LG_ tablosundan mı LV_ görünümünden mü okuyacağı.</summary>
+    public StockSourceKind StockSource { get; set; } = StockSourceKind.View;
 
     public string FirmSuffix => FirmNo.ToString("000");
     public string PeriodSuffix => PeriodNo.ToString("00");

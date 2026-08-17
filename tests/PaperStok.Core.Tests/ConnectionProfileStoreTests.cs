@@ -38,7 +38,8 @@ public class ConnectionProfileStoreTests
                 Username = "logo",
                 ProtectedPassword = "already-protected-base64",
                 FirmNo = 1,
-                PeriodNo = 1
+                PeriodNo = 1,
+                StockSource = StockSourceKind.Table
             };
 
             store.Save([profile]);
@@ -49,6 +50,27 @@ public class ConnectionProfileStoreTests
             Assert.Equal(1433, loaded[0].Port);
             Assert.Equal("already-protected-base64", loaded[0].ProtectedPassword);
             Assert.Equal(LogoAuthMode.SqlServer, loaded[0].AuthMode);
+            Assert.Equal(StockSourceKind.Table, loaded[0].StockSource);
+        }
+        finally
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void Load_DefaultsStockSourceToView_ForProfilesSavedBeforeThatFieldExisted()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"paperstok-test-{Guid.NewGuid():N}.json");
+        try
+        {
+            File.WriteAllText(path, """[{ "Name": "Eski Profil", "FirmNo": 1, "PeriodNo": 1 }]""");
+
+            var loaded = new ConnectionProfileStore(path).Load();
+
+            Assert.Single(loaded);
+            Assert.Equal(StockSourceKind.View, loaded[0].StockSource);
         }
         finally
         {

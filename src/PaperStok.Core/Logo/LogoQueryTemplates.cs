@@ -28,14 +28,16 @@ namespace PaperStok.Core.Logo;
 /// not L_CAPIDEF (which doesn't exist there — "Invalid object name"), and
 /// LG_UNITSETF has no UINFO column (the unit code lives on UNITSETL instead).
 ///
-/// STINVTOT specifically reads from the LV_ prefix, not LG_: on this
-/// installation LG_&lt;firm&gt;_&lt;period&gt;_STINVTOT exists but is never
-/// populated (the "totals recalculation" job that would maintain it isn't
-/// run), while LV_&lt;firm&gt;_&lt;period&gt;_STINVTOT is a live view with the
-/// identical column set that computes current on-hand/reserved quantities
-/// on the fly — confirmed by comparing row counts between the two. Other
-/// tables (ITEMS, UNITSETL) are plain master-data tables, not periodically
-/// recalculated aggregates, so LG_ is fine for those.
+/// STINVTOT defaults to the LV_ prefix (the view), not LG_ (the table): on
+/// the installation this was first verified against, LG_&lt;firm&gt;_&lt;period&gt;_STINVTOT
+/// exists but is never populated (the "totals recalculation" job that would
+/// maintain it isn't run), while LV_&lt;firm&gt;_&lt;period&gt;_STINVTOT is a live
+/// view with the identical column set that computes current on-hand/reserved
+/// quantities on the fly. Installations where that job does run can switch a
+/// profile to the table via ConnectionProfile.StockSource — Bağlantı
+/// Ayarları exposes this as "Tablo (LG_)" / "Görünüm (LV_)". Other tables
+/// (ITEMS, UNITSETL) are plain master-data tables, not periodically
+/// recalculated aggregates, so LG_ is fine for those regardless.
 ///
 /// Heavily customized Logo installations can still differ, so every profile
 /// can override this template via ConnectionProfile.CustomQueryTemplate —
@@ -58,7 +60,7 @@ public static class LogoQueryTemplates
             SUM(iv.RESERVED)    AS Reserved,
             SUM(iv.ACTPORDER)   AS OnOrder,
             CASE WHEN it.ACTIVE = 0 THEN 1 ELSE 0 END AS IsActive
-        FROM LV_{FIRM}_{PERIOD}_STINVTOT iv
+        FROM {STINVTOT_PREFIX}_{FIRM}_{PERIOD}_STINVTOT iv
         INNER JOIN LG_{FIRM}_ITEMS it ON it.LOGICALREF = iv.STOCKREF
         INNER JOIN L_CAPIWHOUSE wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
         LEFT JOIN LG_{FIRM}_UNITSETL un ON un.UNITSETREF = it.UNITSETREF AND un.MAINUNIT = 1
@@ -81,7 +83,10 @@ public static class LogoQueryTemplates
             ? DefaultWarehouseTotalsQuery
             : profile.CustomQueryTemplate;
 
+        var stinvtotPrefix = profile.StockSource == StockSourceKind.Table ? "LG" : "LV";
+
         var sql = template
+            .Replace("{STINVTOT_PREFIX}", stinvtotPrefix)
             .Replace("{FIRM}", profile.FirmSuffix)
             .Replace("{PERIOD}", profile.PeriodSuffix)
             .Replace("{FIRMNO}", profile.FirmNo.ToString());

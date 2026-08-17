@@ -37,6 +37,8 @@ public partial class ConnectionSettingsWindow : Window
             UsernameBox.Text = existingProfile.Username;
             FirmNoBox.Text = existingProfile.FirmNo.ToString();
             PeriodNoBox.Text = existingProfile.PeriodNo.ToString();
+            TableSourceRadio.IsChecked = existingProfile.StockSource == StockSourceKind.Table;
+            ViewSourceRadio.IsChecked = existingProfile.StockSource == StockSourceKind.View;
             EncryptCheck.IsChecked = existingProfile.EncryptConnection;
             TrustCertCheck.IsChecked = existingProfile.TrustServerCertificate;
             CustomQueryBox.Text = existingProfile.CustomQueryTemplate ?? "";
@@ -148,6 +150,7 @@ public partial class ConnectionSettingsWindow : Window
             ProtectedPassword = protectedPassword,
             FirmNo = firmNo,
             PeriodNo = periodNo,
+            StockSource = TableSourceRadio.IsChecked == true ? StockSourceKind.Table : StockSourceKind.View,
             EncryptConnection = EncryptCheck.IsChecked == true,
             TrustServerCertificate = TrustCertCheck.IsChecked == true,
             CustomQueryTemplate = string.IsNullOrWhiteSpace(CustomQueryBox.Text) ? null : CustomQueryBox.Text

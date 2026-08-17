@@ -77,6 +77,15 @@
         <TextBlock Text="Logo Tiger3 tablo ön eki: LG_&lt;Firma No&gt;_&lt;Dönem No&gt;_..."
                    FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,4,0,12" />
 
+        <TextBlock Text="Stok Kaynağı" Margin="0,0,0,4" />
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+            <RadioButton x:Name="ViewSourceRadio" Content="Görünüm (LV_) — önerilen" GroupName="StockSource" IsChecked="True" Margin="0,0,20,0" />
+            <RadioButton x:Name="TableSourceRadio" Content="Tablo (LG_)" GroupName="StockSource" />
+        </StackPanel>
+        <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,12">
+            Stok toplamları bazı kurulumlarda LG_...STINVTOT tablosunda, bazılarında ise aynı yapıdaki LV_...STINVTOT görünümünde günceldir (tabloyu besleyen toplam güncelleme işi çalışmıyorsa tablo eski kalır). Emin değilseniz Görünüm (LV_) seçili kalsın.
+        </TextBlock>
+
         <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
             <CheckBox x:Name="EncryptCheck" Content="Bağlantıyı şifrele (Encrypt)" IsChecked="True" Margin="0,0,20,0" />
             <CheckBox x:Name="TrustCertCheck" Content="Sunucu sertifikasına güven" IsChecked="True" />
@@ -86,7 +95,8 @@
             <StackPanel Margin="0,8,0,0">
                 <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,6">
                     Logo kurulumunuz standart şemadan farklıysa varsayılan sorguyu burada
-                    değiştirebilirsiniz. {FIRM}, {PERIOD} ve {FIRMNO} yer tutucuları otomatik doldurulur.
+                    değiştirebilirsiniz. {FIRM}, {PERIOD}, {FIRMNO} ve {STINVTOT_PREFIX} (yukarıdaki
+                    Stok Kaynağı seçimine göre LG veya LV) yer tutucuları otomatik doldurulur.
                     Boş bırakılırsa PaperStok'un varsayılan sorgusu kullanılır.
                 </TextBlock>
                 <TextBlock x:Name="CustomQueryActiveText" TextWrapping="Wrap" FontSize="11" FontWeight="SemiBold"

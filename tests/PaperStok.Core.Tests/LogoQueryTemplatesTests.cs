@@ -25,6 +25,18 @@ public class LogoQueryTemplatesTests
         Assert.DoesNotContain("{FIRM}", sql);
         Assert.DoesNotContain("{PERIOD}", sql);
         Assert.DoesNotContain("{FIRMNO}", sql);
+        Assert.DoesNotContain("{STINVTOT_PREFIX}", sql);
+    }
+
+    [Fact]
+    public void Build_UsesTableInsteadOfViewWhenStockSourceIsTable()
+    {
+        var profile = new ConnectionProfile { FirmNo = 3, PeriodNo = 1, StockSource = StockSourceKind.Table };
+
+        var sql = LogoQueryTemplates.Build(profile);
+
+        Assert.Contains("LG_003_01_STINVTOT", sql);
+        Assert.DoesNotContain("LV_003_01_STINVTOT", sql);
     }
 
     [Fact]
