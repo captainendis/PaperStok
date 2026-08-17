@@ -1,0 +1,18 @@
+<Project>
+  <!-- Copyright (c) 2026 PaperAxis. All rights reserved. -->
+  <!-- Tek sürüm/künye kaynağı: tüm projeler bu değerleri devralır. -->
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <FileVersion>0.1.0.0</FileVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Company>PaperAxis</Company>
+    <Product>PaperStok</Product>
+    <Authors>PaperAxis</Authors>
+    <Copyright>© 2026 PaperAxis. Tüm hakları saklıdır.</Copyright>
+    <NeutralLanguage>tr-TR</NeutralLanguage>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+</Project>

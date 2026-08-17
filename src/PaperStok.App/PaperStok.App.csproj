@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <RootNamespace>PaperStok.App</RootNamespace>
+    <AssemblyName>PaperStok</AssemblyName>
+    <ApplicationIcon>Resources\paperstok.ico</ApplicationIcon>
+    <AssemblyTitle>PaperStok</AssemblyTitle>
+
+    <!-- Portable dağıtım: bkz. build/publish-win-x64.sh (dotnet publish, RID win-x64,
+         self contained, tek dosya). -->
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PaperStok.Core\PaperStok.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\paperaxis-mark-navy.png" />
+    <Resource Include="Resources\paperaxis-mark-navy@2x.png" />
+    <Resource Include="Resources\paperaxis-favicon.png" />
+  </ItemGroup>
+
+</Project>

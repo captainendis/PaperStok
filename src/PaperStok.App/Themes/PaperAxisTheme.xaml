@@ -1,0 +1,163 @@
+<!--
+  Copyright (c) 2026 PaperAxis. All rights reserved.
+  This file is part of PaperStok.
+  PaperAxis renk tokenları (assets/tokens/tokens.css ile aynı değerler).
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Eksen Laciverdi -->
+    <SolidColorBrush x:Key="Pa.Navy900" Color="#0A1B30" />
+    <SolidColorBrush x:Key="Pa.Navy800" Color="#0F2540" />
+    <SolidColorBrush x:Key="Pa.Navy700" Color="#163356" />
+    <SolidColorBrush x:Key="Pa.Navy500" Color="#245488" />
+    <SolidColorBrush x:Key="Pa.Navy400" Color="#4478AE" />
+    <SolidColorBrush x:Key="Pa.Navy200" Color="#B4CAE2" />
+    <SolidColorBrush x:Key="Pa.Navy100" Color="#DAE6F2" />
+    <SolidColorBrush x:Key="Pa.Navy50" Color="#EFF4FA" />
+
+    <!-- Kıvılcım Mercanı -->
+    <SolidColorBrush x:Key="Pa.Coral600" Color="#D24C22" />
+    <SolidColorBrush x:Key="Pa.Coral500" Color="#F2653A" />
+    <SolidColorBrush x:Key="Pa.Coral400" Color="#F7855F" />
+
+    <!-- Kağıt -->
+    <SolidColorBrush x:Key="Pa.Paper50" Color="#FAF8F4" />
+    <SolidColorBrush x:Key="Pa.Paper100" Color="#F2EFE8" />
+    <SolidColorBrush x:Key="Pa.Paper200" Color="#E6E1D7" />
+
+    <!-- Mürekkep -->
+    <SolidColorBrush x:Key="Pa.Ink900" Color="#14181D" />
+    <SolidColorBrush x:Key="Pa.Ink700" Color="#333B46" />
+    <SolidColorBrush x:Key="Pa.Ink600" Color="#4A5462" />
+    <SolidColorBrush x:Key="Pa.Ink500" Color="#667181" />
+    <SolidColorBrush x:Key="Pa.Ink300" Color="#B4BCC7" />
+
+    <!-- Durum -->
+    <SolidColorBrush x:Key="Pa.Success" Color="#1A7A50" />
+    <SolidColorBrush x:Key="Pa.SuccessBg" Color="#E6F4EC" />
+    <SolidColorBrush x:Key="Pa.Danger" Color="#C0392F" />
+    <SolidColorBrush x:Key="Pa.DangerBg" Color="#FBE9E7" />
+
+    <FontFamily x:Key="Pa.FontSans">Segoe UI</FontFamily>
+    <FontFamily x:Key="Pa.FontMono">Consolas</FontFamily>
+
+    <!-- Taban pencere/metin stili -->
+    <Style TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource Pa.Paper50}" />
+        <Setter Property="FontFamily" Value="{StaticResource Pa.FontSans}" />
+        <Setter Property="TextElement.Foreground" Value="{StaticResource Pa.Ink900}" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- Birincil aksiyon: lacivert zemin -->
+    <Style x:Key="Pa.PrimaryButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Pa.Navy500}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Pa.Navy700}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Pa.Ink300}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Tek mercan aksiyon: ekranın öne çıkan tek eylemi (örn. "Stokları Çek") -->
+    <Style x:Key="Pa.AccentButton" TargetType="Button" BasedOn="{StaticResource Pa.PrimaryButton}">
+        <Setter Property="Background" Value="{StaticResource Pa.Coral500}" />
+        <Setter Property="Foreground" Value="{StaticResource Pa.Ink900}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Pa.Coral600}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Pa.Ink300}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- İkincil aksiyon: kenarlıklı, düz zemin -->
+    <Style x:Key="Pa.SecondaryButton" TargetType="Button">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource Pa.Navy700}" />
+        <Setter Property="Padding" Value="14,7" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderBrush" Value="{StaticResource Pa.Navy200}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Pa.Navy50}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBox">
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="BorderBrush" Value="{StaticResource Pa.Navy200}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="White" />
+    </Style>
+
+    <Style TargetType="PasswordBox">
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="BorderBrush" Value="{StaticResource Pa.Navy200}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="White" />
+    </Style>
+
+    <Style TargetType="ComboBox">
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="Background" Value="White" />
+    </Style>
+
+    <Style TargetType="DataGrid">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="{StaticResource Pa.Paper200}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="RowHeaderWidth" Value="0" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource Pa.Paper200}" />
+        <Setter Property="AlternatingRowBackground" Value="{StaticResource Pa.Paper50}" />
+        <Setter Property="CanUserAddRows" Value="False" />
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="IsReadOnly" Value="True" />
+    </Style>
+
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource Pa.Navy900}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,18 @@
+## .NET
+bin/
+obj/
+dist/
+*.user
+*.suo
+
+## IDE
+.vs/
+.vscode/
+*.swp
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Portable app runtime data (kullanıcıya özel, repo dışı)
+profiles.json
