@@ -9,10 +9,20 @@ namespace PaperStok.Core.Logo;
 
 /// <summary>
 /// Builds the SQL used to read warehouse stock totals from a Logo Tiger3
-/// Enterprise database. Table/column names are cross-checked against two
-/// sources: https://logoisortagim.com.tr/blog-logo-veritabani-tablolari.html
-/// and the field-level schema dump at https://github.com/ugurozpinar/Logo
-/// ("Tablo Açıklamaları Yeni").
+/// Enterprise database. Table/column names were cross-checked against two
+/// written sources (https://logoisortagim.com.tr/blog-logo-veritabani-tablolari.html
+/// and the field-level dump at https://github.com/ugurozpinar/Logo), and then
+/// against a live customer database via a read-only sys.tables discovery
+/// query run through PaperStok itself.
+///
+/// The warehouse table is L_CAPIWHOUSE — confirmed by that live-database
+/// query. Both written sources instead named L_CAPIDEF ("Kuruluş bilgileri
+/// (ambar)"), which turned out not to exist on this installation ("Invalid
+/// object name 'L_CAPIDEF'"); L_CAPIWHOUSE was our original, pre-"correction"
+/// guess. This is the strongest evidence tier PaperStok has — a real
+/// database beats any documentation — but its own columns (NR/NAME/FIRMNR)
+/// are still inferred by analogy with sibling L_CAPI* tables, not directly
+/// confirmed at the column level.
 ///
 /// Confirmed at the field level (from the GitHub dump):
 /// - LG_&lt;firm&gt;_&lt;period&gt;_STINVTOT ("Günlük Malzeme Ambar Toplamı"):
@@ -26,11 +36,6 @@ namespace PaperStok.Core.Logo;
 ///   the actual unit code/name lives on LG_&lt;firm&gt;_UNITSETL, one row per
 ///   unit in the set, joined by UNITSETREF with MAINUNIT flagging the item's
 ///   base unit.
-/// - L_CAPIDEF is the "Kuruluş bilgileri (ambar)" table per both sources
-///   (not L_CAPIWHOUSE, which appears in neither). Its own columns aren't
-///   published, but sibling L_CAPI* org tables (L_CAPIFIRM, L_CAPIDEPT,
-///   L_CAPIUNIT) are confirmed — via real, working SQL in the GitHub repo —
-///   to share the same NR / NAME / FIRMNR shape used here.
 ///
 /// Heavily customized Logo installations can still differ, so every profile
 /// can override this template via ConnectionProfile.CustomQueryTemplate —
@@ -54,7 +59,7 @@ public static class LogoQueryTemplates
             SUM(iv.ACTPORDER)   AS OnOrder
         FROM LG_{FIRM}_{PERIOD}_STINVTOT iv
         INNER JOIN LG_{FIRM}_ITEMS it ON it.LOGICALREF = iv.STOCKREF
-        INNER JOIN L_CAPIDEF wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
+        INNER JOIN L_CAPIWHOUSE wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
         LEFT JOIN LG_{FIRM}_UNITSETL un ON un.UNITSETREF = it.UNITSETREF AND un.MAINUNIT = 1
         WHERE it.CARDTYPE = 1 AND it.ACTIVE = 0 AND iv.INVENNO <> -1
         GROUP BY wh.NR, wh.NAME, it.CODE, it.NAME, un.CODE
