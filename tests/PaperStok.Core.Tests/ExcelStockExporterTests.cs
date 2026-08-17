@@ -28,11 +28,11 @@ public class ExcelStockExporterTests
             using var workbook = new XLWorkbook(path);
             var sheet = workbook.Worksheet(1);
 
-            Assert.Equal("Ambar No", sheet.Cell(1, 1).GetString());
-            Assert.Equal("Kullanılabilir", sheet.Cell(1, 9).GetString());
-            Assert.Equal(2, sheet.Cell(2, 1).GetValue<int>());
-            Assert.Equal("Şube Ambarı", sheet.Cell(2, 2).GetString());
-            Assert.Equal(7m, sheet.Cell(2, 9).GetValue<decimal>());
+            Assert.Equal("Ambar Adı", sheet.Cell(1, 1).GetString());
+            Assert.Equal("Kullanılabilir", sheet.Cell(1, 8).GetString());
+            Assert.Equal("Şube Ambarı", sheet.Cell(2, 1).GetString());
+            Assert.Equal("STK-002", sheet.Cell(2, 2).GetString());
+            Assert.Equal(7m, sheet.Cell(2, 8).GetValue<decimal>());
         }
         finally
         {

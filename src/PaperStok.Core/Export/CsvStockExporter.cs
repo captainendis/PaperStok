@@ -25,7 +25,7 @@ public sealed class CsvStockExporter : IStockExporter
         await using var writer = new StreamWriter(filePath, false, new UTF8Encoding(true));
 
         await writer.WriteLineAsync(string.Join(';',
-            "Ambar No", "Ambar Adı", "Stok Kodu", "Stok Adı", "Birim",
+            "Ambar Adı", "Stok Kodu", "Stok Adı", "Birim",
             "Eldeki", "Rezerve", "Sipariş", "Kullanılabilir"));
 
         foreach (var row in rows)
@@ -33,7 +33,6 @@ public sealed class CsvStockExporter : IStockExporter
             cancellationToken.ThrowIfCancellationRequested();
 
             var line = string.Join(';',
-                row.WarehouseNo.ToString(Culture),
                 Escape(row.WarehouseName),
                 Escape(row.ItemCode),
                 Escape(row.ItemName),

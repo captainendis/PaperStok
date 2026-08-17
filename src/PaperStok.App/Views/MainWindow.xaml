@@ -100,7 +100,6 @@
 
             <DataGrid x:Name="StockGrid" Grid.Row="1">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Ambar No" Binding="{Binding WarehouseNo}" Width="80" />
                     <DataGridTextColumn Header="Ambar Adı" Binding="{Binding WarehouseName}" Width="150" />
                     <DataGridTextColumn Header="Stok Kodu" Binding="{Binding ItemCode}" Width="130" />
                     <DataGridTextColumn Header="Stok Adı" Binding="{Binding ItemName}" Width="*" />

@@ -15,7 +15,7 @@ public sealed class ExcelStockExporter : IStockExporter
 
     private static readonly string[] Headers =
     [
-        "Ambar No", "Ambar Adı", "Stok Kodu", "Stok Adı", "Birim",
+        "Ambar Adı", "Stok Kodu", "Stok Adı", "Birim",
         "Eldeki", "Rezerve", "Sipariş", "Kullanılabilir"
     ];
 
@@ -37,19 +37,18 @@ public sealed class ExcelStockExporter : IStockExporter
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            sheet.Cell(rowIndex, 1).Value = row.WarehouseNo;
-            sheet.Cell(rowIndex, 2).Value = row.WarehouseName;
-            sheet.Cell(rowIndex, 3).Value = row.ItemCode;
-            sheet.Cell(rowIndex, 4).Value = row.ItemName;
-            sheet.Cell(rowIndex, 5).Value = row.Unit;
-            sheet.Cell(rowIndex, 6).Value = row.OnHand;
-            sheet.Cell(rowIndex, 7).Value = row.Reserved;
-            sheet.Cell(rowIndex, 8).Value = row.OnOrder;
-            sheet.Cell(rowIndex, 9).Value = row.Available;
+            sheet.Cell(rowIndex, 1).Value = row.WarehouseName;
+            sheet.Cell(rowIndex, 2).Value = row.ItemCode;
+            sheet.Cell(rowIndex, 3).Value = row.ItemName;
+            sheet.Cell(rowIndex, 4).Value = row.Unit;
+            sheet.Cell(rowIndex, 5).Value = row.OnHand;
+            sheet.Cell(rowIndex, 6).Value = row.Reserved;
+            sheet.Cell(rowIndex, 7).Value = row.OnOrder;
+            sheet.Cell(rowIndex, 8).Value = row.Available;
             rowIndex++;
         }
 
-        var quantityRange = sheet.Range(2, 6, Math.Max(rowIndex - 1, 2), 9);
+        var quantityRange = sheet.Range(2, 5, Math.Max(rowIndex - 1, 2), 8);
         quantityRange.Style.NumberFormat.Format = "#,##0.###";
 
         sheet.SheetView.FreezeRows(1);

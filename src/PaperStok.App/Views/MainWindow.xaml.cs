@@ -163,7 +163,7 @@ public partial class MainWindow : Window
             .Select(r => (r.WarehouseNo, r.WarehouseName))
             .Distinct()
             .OrderBy(w => w.WarehouseNo)
-            .Select(w => new WarehouseFilterItem(w.WarehouseNo, $"{w.WarehouseNo} — {w.WarehouseName}"))
+            .Select(w => new WarehouseFilterItem(w.WarehouseNo, w.WarehouseName))
             .ToList();
 
         warehouses.Insert(0, WarehouseFilterItem.All);

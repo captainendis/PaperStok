@@ -10,6 +10,7 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 - Ambar Raporu ekranı: birden fazla ambarı tek seferde görüntüleme, seçtiğiniz ambarları tek bir sütun altında birleştirme (ör. Geçici Depo'yu Merkez'e ekleme), ürünleri arayıp seçerek filtreleme, satır bazında (ürün) ve sütun bazında (ambar) toplamlar, Excel/CSV'ye aktarma.
 - Raporları adlandırıp kaydetme ve daha sonra tekrar çalıştırma (`reports.json`, `profiles.json` ile aynı portable saklama düzeni).
 ### Değiştirildi
+- "Ambar No" sütunu ürün listesinden ve Excel/CSV çıktısından kaldırıldı; artık sadece "Ambar Adı" gösteriliyor (ambar numarası birleştirme/filtreleme mantığında dahili olarak kullanılmaya devam ediyor).
 - Varsayılan ambar stok sorgusu logoisortagim.com.tr'nin Logo veritabanı tabloları rehberine göre çapraz kontrol edildi: ambar tablosu `L_CAPIWHOUSE`'dan `L_CAPIDEF`'e düzeltildi, `ITEMS.ACTIVE = 0` (yalnızca aktif stoklar) filtresi eklendi.
 - Sorgu, github.com/ugurozpinar/Logo deposundaki alan bazlı Logo şema dökümüne göre ikinci kez çapraz kontrol edildi ve düzeltildi: birim çözümlemesi `UNITSETF.UINFO` (var olmayan bir kolon) yerine `UNITSETL.MAINUNIT`'e taşındı; `STINVTOT.ORDERED` (var olmayan bir kolon) yerine `ACTPORDER` kullanıldı; `STINVTOT.INVENNO <> -1` filtresi eklendi ("tüm ambarlar" özet satırını dışlamak için).
 ### Düzeltildi

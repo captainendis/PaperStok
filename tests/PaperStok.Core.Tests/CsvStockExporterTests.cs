@@ -29,8 +29,8 @@ public class CsvStockExporterTests
             await new CsvStockExporter().ExportAsync(rows, path);
             var lines = await File.ReadAllLinesAsync(path);
 
-            Assert.Equal("Ambar No;Ambar Adı;Stok Kodu;Stok Adı;Birim;Eldeki;Rezerve;Sipariş;Kullanılabilir", lines[0]);
-            Assert.Equal("1;Merkez Ambar;STK-001;\"Test Ürün; Özel\";AD;100,5;20;5;80,5", lines[1]);
+            Assert.Equal("Ambar Adı;Stok Kodu;Stok Adı;Birim;Eldeki;Rezerve;Sipariş;Kullanılabilir", lines[0]);
+            Assert.Equal("Merkez Ambar;STK-001;\"Test Ürün; Özel\";AD;100,5;20;5;80,5", lines[1]);
         }
         finally
         {
