@@ -62,7 +62,7 @@
                     </TextBlock>
                     <Button DockPanel.Dock="Bottom" Content="Verileri Yenile" Style="{StaticResource Pa.SecondaryButton}"
                             Click="Refresh_Click" Margin="0,8,0,0" HorizontalAlignment="Left" />
-                    <DataGrid x:Name="MappingGrid" AutoGenerateColumns="False" CanUserAddRows="False"
+                    <DataGrid x:Name="MappingGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
                               RowHeaderWidth="0" GridLinesVisibility="Horizontal">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Ambar No" Binding="{Binding WarehouseNo}" IsReadOnly="True" Width="70" />
