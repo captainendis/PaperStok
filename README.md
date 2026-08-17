@@ -27,7 +27,7 @@ Bu üç katman uygulamanın kendisini korur; **asıl ve nihai güvence** ise Log
 - Çalıştırmak için: Windows 10/11 (x64). Ek bir .NET kurulumu gerekmez — dağıtım paketi self-contained'dır.
 - Geliştirmek için: .NET 8 SDK (Windows Desktop iş yükü dahil — Windows'ta varsayılan .NET 8 SDK kurulumunda gelir).
 
-> **TEYİT:** Varsayılan ambar stok sorgusu (`PaperStok.Core/Logo/LogoQueryTemplates.cs`) Logo Tiger3'ün standart şema adlarını (`STINVTOT`, `ITEMS`, `L_CAPIWHOUSE`) esas alır. Gerçek bir Logo Tiger3 veritabanına karşı doğrulanmamıştır ve müşteriye özel Logo kurulumlarında alan adları farklılaşabilir. Bağlantı Ayarları ekranındaki "Gelişmiş: Özel Ambar Sorgusu" alanından ortamınıza göre uyarlayın.
+> **TEYİT:** Varsayılan ambar stok sorgusu (`PaperStok.Core/Logo/LogoQueryTemplates.cs`), [logoisortagim.com.tr'nin Logo veritabanı tabloları rehberine](https://logoisortagim.com.tr/blog-logo-veritabani-tablolari.html) göre çapraz kontrol edildi. Doğrulanan kısımlar: tablo adlandırma kalıbı (`LG_<firma>_<dönem>_TABLOADI`), `STINVTOT`'un "günlük malzeme ambar toplamları" tablosu olduğu, `ITEMS.CARDTYPE` kodları (1=Ticari mal, 2=Hammadde, 4=Mamul, 11=Hizmet) ve `ITEMS.ACTIVE` (0=Aktif, 1=Pasif). Doğrulanamayan/varsayıma dayalı kısımlar: `STINVTOT` ve ambar tablosunun (`L_CAPIDEF` — bazı Logo dokümanlarında `L_CAPIWHOUSE` olarak geçiyor) tam kolon adları (`STOCKREF`, `INVENNO`, `ONHAND`, `RESERVED`, `ORDERED`, `NR`, `NAME`, `FIRMNR`) gerçek bir veritabanına karşı test edilmedi. Müşteriye özel Logo kurulumlarında alan adları farklılaşabilir. Bağlantı Ayarları ekranındaki "Gelişmiş: Özel Ambar Sorgusu" alanından ortamınıza göre uyarlayın.
 
 ## Kurulum
 
