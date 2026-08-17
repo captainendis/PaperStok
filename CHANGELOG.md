@@ -11,6 +11,7 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 - Varsayılan ambar stok sorgusu logoisortagim.com.tr'nin Logo veritabanı tabloları rehberine göre çapraz kontrol edildi: ambar tablosu `L_CAPIWHOUSE`'dan `L_CAPIDEF`'e düzeltildi, `ITEMS.ACTIVE = 0` (yalnızca aktif stoklar) filtresi eklendi.
 - Sorgu, github.com/ugurozpinar/Logo deposundaki alan bazlı Logo şema dökümüne göre ikinci kez çapraz kontrol edildi ve düzeltildi: birim çözümlemesi `UNITSETF.UINFO` (var olmayan bir kolon) yerine `UNITSETL.MAINUNIT`'e taşındı; `STINVTOT.ORDERED` (var olmayan bir kolon) yerine `ACTPORDER` kullanıldı; `STINVTOT.INVENNO <> -1` filtresi eklendi ("tüm ambarlar" özet satırını dışlamak için).
 ### Düzeltildi
+- "Yeni Bağlantı" penceresi açılır açılmaz çöken hata giderildi: XAML'de öndeğer seçili `SqlAuthRadio`, henüz oluşturulmamış `UsernameBox`/`PasswordBox` alanlarına erişen bir olay işleyicisini pencere daha kurulmadan (InitializeComponent sırasında) tetikliyordu. Ayrıca beklenmeyen bir hata uygulamayı sessizce çökertmek yerine artık bir hata penceresi gösteriyor.
 
 ## [0.1.0] - 2026-08-17
 

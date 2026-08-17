@@ -47,6 +47,14 @@ public partial class ConnectionSettingsWindow : Window
 
     private void AuthMode_Changed(object sender, RoutedEventArgs e)
     {
+        // SqlAuthRadio's IsChecked="True" in XAML fires this Checked handler
+        // during InitializeComponent() itself, before UsernameBox/PasswordBox
+        // (declared later in the markup) have been assigned — guard against
+        // that, the explicit call at the end of the constructor re-runs this
+        // once every field is set.
+        if (UsernameBox is null || PasswordBox is null)
+            return;
+
         var isSqlAuth = SqlAuthRadio.IsChecked == true;
         UsernameBox.IsEnabled = isSqlAuth;
         PasswordBox.IsEnabled = isSqlAuth;
