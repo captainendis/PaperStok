@@ -44,13 +44,37 @@ public partial class StockReportWindow : Window
         _definitions.AddRange(_reportStore.Load());
         ReportCombo.ItemsSource = _definitions;
 
+        StatusFilterCombo.ItemsSource = new List<StatusFilterItem>
+        {
+            new(ItemStatusFilter.All, "Aktif + Pasif"),
+            new(ItemStatusFilter.ActiveOnly, "Yalnızca Aktif"),
+            new(ItemStatusFilter.PassiveOnly, "Yalnızca Pasif")
+        };
+        StatusFilterCombo.SelectedIndex = 0;
+
         Title = $"PaperStok — Ambar Raporu ({profile.Name})";
 
         if (!string.IsNullOrWhiteSpace(profile.CustomQueryTemplate))
             StatusText.Text = "⚠ Bu profilde özel bir sorgu tanımlı — Verileri Yenile onu kullanır, varsayılan sorguyu değil.";
     }
 
+    private ItemStatusFilter CurrentStatusFilter => (StatusFilterCombo.SelectedItem as StatusFilterItem)?.Filter ?? ItemStatusFilter.All;
+
+    private List<WarehouseStockRow> FilteredRows => _lastPulledRows.Apply(CurrentStatusFilter).ToList();
+
     private async void Refresh_Click(object sender, RoutedEventArgs e) => await PullDataAsync();
+
+    private void StatusFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_lastPulledRows.Count == 0)
+            return;
+
+        RebuildMappingRows();
+        RebuildItemRows();
+        StatusText.Text = $"{FilteredRows.Count} satır ({CurrentStatusFilterLabel}). Ambar gruplarını düzenleyip Raporu Oluştur'a basın.";
+    }
+
+    private string CurrentStatusFilterLabel => (StatusFilterCombo.SelectedItem as StatusFilterItem)?.Label ?? "Aktif + Pasif";
 
     private async Task PullDataAsync()
     {
@@ -96,7 +120,7 @@ public partial class StockReportWindow : Window
     {
         var existingByWarehouse = _mappingRows.ToDictionary(r => r.WarehouseNo, r => r.GroupName);
 
-        _mappingRows = _lastPulledRows
+        _mappingRows = FilteredRows
             .Select(r => (r.WarehouseNo, r.WarehouseName))
             .Distinct()
             .OrderBy(w => w.WarehouseNo)
@@ -117,7 +141,7 @@ public partial class StockReportWindow : Window
     {
         var existingByCode = _allItems.ToDictionary(i => i.ItemCode, i => i.IsSelected, StringComparer.OrdinalIgnoreCase);
 
-        _allItems = _lastPulledRows
+        _allItems = FilteredRows
             .Select(r => (r.ItemCode, r.ItemName))
             .Distinct()
             .OrderBy(i => i.ItemCode, StringComparer.OrdinalIgnoreCase)
@@ -182,7 +206,7 @@ public partial class StockReportWindow : Window
         }
 
         var definition = BuildDefinitionFromCurrentState(ReportCombo.SelectedItem is StockReportDefinition selected ? selected.Name : "");
-        _currentResult = StockReportBuilder.Build(_lastPulledRows, definition);
+        _currentResult = StockReportBuilder.Build(FilteredRows, definition);
         RenderPivot(_currentResult);
         StatusText.Text = $"{_currentResult.Rows.Count} ürün, {_currentResult.GroupNames.Count} ambar sütunu.";
     }
@@ -388,5 +412,10 @@ public partial class StockReportWindow : Window
         {
             IsEnabled = true;
         }
+    }
+
+    private sealed record StatusFilterItem(ItemStatusFilter Filter, string Label)
+    {
+        public override string ToString() => Label;
     }
 }

@@ -16,7 +16,10 @@ public sealed class WarehouseStockRow
     public decimal OnHand { get; set; }
     public decimal Reserved { get; set; }
     public decimal OnOrder { get; set; }
+    public bool IsActive { get; set; } = true;
 
     /// <summary>Kullanılabilir miktar: eldeki - rezerve edilen.</summary>
     public decimal Available => OnHand - Reserved;
+
+    public string StatusLabel => IsActive ? "Aktif" : "Pasif";
 }

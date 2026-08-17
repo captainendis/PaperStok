@@ -16,7 +16,7 @@ public sealed class ExcelStockExporter : IStockExporter
     private static readonly string[] Headers =
     [
         "Ambar Adı", "Stok Kodu", "Stok Adı", "Birim",
-        "Eldeki", "Rezerve", "Sipariş", "Kullanılabilir"
+        "Eldeki", "Rezerve", "Sipariş", "Kullanılabilir", "Durum"
     ];
 
     public Task ExportAsync(IReadOnlyList<WarehouseStockRow> rows, string filePath, CancellationToken cancellationToken = default)
@@ -45,6 +45,7 @@ public sealed class ExcelStockExporter : IStockExporter
             sheet.Cell(rowIndex, 6).Value = row.Reserved;
             sheet.Cell(rowIndex, 7).Value = row.OnOrder;
             sheet.Cell(rowIndex, 8).Value = row.Available;
+            sheet.Cell(rowIndex, 9).Value = row.StatusLabel;
             rowIndex++;
         }
 

@@ -30,9 +30,11 @@ public class ExcelStockExporterTests
 
             Assert.Equal("Ambar Adı", sheet.Cell(1, 1).GetString());
             Assert.Equal("Kullanılabilir", sheet.Cell(1, 8).GetString());
+            Assert.Equal("Durum", sheet.Cell(1, 9).GetString());
             Assert.Equal("Şube Ambarı", sheet.Cell(2, 1).GetString());
             Assert.Equal("STK-002", sheet.Cell(2, 2).GetString());
             Assert.Equal(7m, sheet.Cell(2, 8).GetValue<decimal>());
+            Assert.Equal("Aktif", sheet.Cell(2, 9).GetString());
         }
         finally
         {

@@ -11,6 +11,11 @@ namespace PaperStok.Core.Logo;
 /// Builds the SQL used to read warehouse stock totals from a Logo Tiger3
 /// Enterprise database.
 ///
+/// The query itself doesn't filter by item card type or active/passive
+/// status — it returns everything and reports ITEMS.ACTIVE per row as
+/// IsActive, so PaperStok's UI can let the user choose active-only,
+/// passive-only or both without a round trip to the database.
+///
 /// Every table and column this query touches — L_CAPIWHOUSE (NR, NAME,
 /// FIRMNR), LV_&lt;firm&gt;_&lt;period&gt;_STINVTOT (STOCKREF, INVENNO, ONHAND,
 /// RESERVED, ACTPORDER), LG_&lt;firm&gt;_ITEMS (CODE, NAME, ACTIVE,
@@ -51,13 +56,14 @@ public static class LogoQueryTemplates
             ISNULL(un.CODE, '')  AS Unit,
             SUM(iv.ONHAND)      AS OnHand,
             SUM(iv.RESERVED)    AS Reserved,
-            SUM(iv.ACTPORDER)   AS OnOrder
+            SUM(iv.ACTPORDER)   AS OnOrder,
+            CASE WHEN it.ACTIVE = 0 THEN 1 ELSE 0 END AS IsActive
         FROM LV_{FIRM}_{PERIOD}_STINVTOT iv
         INNER JOIN LG_{FIRM}_ITEMS it ON it.LOGICALREF = iv.STOCKREF
         INNER JOIN L_CAPIWHOUSE wh ON wh.NR = iv.INVENNO AND wh.FIRMNR = {FIRMNO}
         LEFT JOIN LG_{FIRM}_UNITSETL un ON un.UNITSETREF = it.UNITSETREF AND un.MAINUNIT = 1
-        WHERE it.ACTIVE = 0 AND iv.INVENNO <> -1
-        GROUP BY wh.NR, wh.NAME, it.CODE, it.NAME, un.CODE
+        WHERE iv.INVENNO <> -1
+        GROUP BY wh.NR, wh.NAME, it.CODE, it.NAME, un.CODE, it.ACTIVE
         HAVING SUM(iv.ONHAND) <> 0 OR SUM(iv.RESERVED) <> 0
         ORDER BY wh.NR, it.CODE;
         """;

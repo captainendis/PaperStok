@@ -26,7 +26,7 @@ public sealed class CsvStockExporter : IStockExporter
 
         await writer.WriteLineAsync(string.Join(';',
             "Ambar Adı", "Stok Kodu", "Stok Adı", "Birim",
-            "Eldeki", "Rezerve", "Sipariş", "Kullanılabilir"));
+            "Eldeki", "Rezerve", "Sipariş", "Kullanılabilir", "Durum"));
 
         foreach (var row in rows)
         {
@@ -40,7 +40,8 @@ public sealed class CsvStockExporter : IStockExporter
                 row.OnHand.ToString(Culture),
                 row.Reserved.ToString(Culture),
                 row.OnOrder.ToString(Culture),
-                row.Available.ToString(Culture));
+                row.Available.ToString(Culture),
+                Escape(row.StatusLabel));
 
             await writer.WriteLineAsync(line);
         }

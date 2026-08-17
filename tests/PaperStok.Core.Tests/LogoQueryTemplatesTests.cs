@@ -21,9 +21,21 @@ public class LogoQueryTemplatesTests
         Assert.Contains("LV_003_01_STINVTOT", sql);
         Assert.Contains("LG_003_ITEMS", sql);
         Assert.Contains("wh.FIRMNR = 3", sql);
+        Assert.Contains("AS IsActive", sql);
         Assert.DoesNotContain("{FIRM}", sql);
         Assert.DoesNotContain("{PERIOD}", sql);
         Assert.DoesNotContain("{FIRMNO}", sql);
+    }
+
+    [Fact]
+    public void Build_DoesNotHardcodeCardTypeOrActiveFilters()
+    {
+        var profile = new ConnectionProfile { FirmNo = 3, PeriodNo = 1 };
+
+        var sql = LogoQueryTemplates.Build(profile);
+
+        Assert.DoesNotContain("CARDTYPE", sql);
+        Assert.DoesNotContain("WHERE it.ACTIVE", sql);
     }
 
     [Fact]

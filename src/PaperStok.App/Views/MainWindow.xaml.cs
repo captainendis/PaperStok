@@ -43,6 +43,14 @@ public partial class MainWindow : Window
         WarehouseFilterCombo.ItemsSource = new List<WarehouseFilterItem> { WarehouseFilterItem.All };
         WarehouseFilterCombo.SelectedIndex = 0;
 
+        StatusFilterCombo.ItemsSource = new List<StatusFilterItem>
+        {
+            new(ItemStatusFilter.All, "Aktif + Pasif"),
+            new(ItemStatusFilter.ActiveOnly, "Yalnızca Aktif"),
+            new(ItemStatusFilter.PassiveOnly, "Yalnızca Pasif")
+        };
+        StatusFilterCombo.SelectedIndex = 0;
+
         FooterText.Text = AppInfo.FooterText;
         UpdateFirmPeriodText();
     }
@@ -190,6 +198,14 @@ public partial class MainWindow : Window
             return false;
         }
 
+        if (StatusFilterCombo.SelectedItem is StatusFilterItem statusFilter)
+        {
+            if (statusFilter.Filter == ItemStatusFilter.ActiveOnly && !row.IsActive)
+                return false;
+            if (statusFilter.Filter == ItemStatusFilter.PassiveOnly && row.IsActive)
+                return false;
+        }
+
         var query = SearchBox.Text?.Trim();
         if (string.IsNullOrEmpty(query))
             return true;
@@ -259,6 +275,11 @@ public partial class MainWindow : Window
     private sealed record WarehouseFilterItem(int? WarehouseNo, string Label)
     {
         public static readonly WarehouseFilterItem All = new(null, "Tüm Ambarlar");
+        public override string ToString() => Label;
+    }
+
+    private sealed record StatusFilterItem(ItemStatusFilter Filter, string Label)
+    {
         public override string ToString() => Label;
     }
 }

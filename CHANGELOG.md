@@ -9,6 +9,7 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 ### Eklendi
 - Ambar Raporu ekranı: birden fazla ambarı tek seferde görüntüleme, seçtiğiniz ambarları tek bir sütun altında birleştirme (ör. Geçici Depo'yu Merkez'e ekleme), ürünleri arayıp seçerek filtreleme, satır bazında (ürün) ve sütun bazında (ambar) toplamlar, Excel/CSV'ye aktarma.
 - Raporları adlandırıp kaydetme ve daha sonra tekrar çalıştırma (`reports.json`, `profiles.json` ile aynı portable saklama düzeni).
+- "Durum" filtresi: hem ana ekranda hem Ambar Raporu'nda "Aktif + Pasif", "Yalnızca Aktif" veya "Yalnızca Pasif" seçilebiliyor — hangi stok kartlarının listeleneceğine artık kullanıcı karar veriyor. Ürün listesine ve Excel/CSV çıktısına "Durum" (Aktif/Pasif) sütunu eklendi.
 ### Değiştirildi
 - "Ambar No" sütunu ürün listesinden ve Excel/CSV çıktısından kaldırıldı; artık sadece "Ambar Adı" gösteriliyor (ambar numarası birleştirme/filtreleme mantığında dahili olarak kullanılmaya devam ediyor).
 - Varsayılan ambar stok sorgusu logoisortagim.com.tr'nin Logo veritabanı tabloları rehberine göre çapraz kontrol edildi: ambar tablosu `L_CAPIWHOUSE`'dan `L_CAPIDEF`'e düzeltildi, `ITEMS.ACTIVE = 0` (yalnızca aktif stoklar) filtresi eklendi.
@@ -21,6 +22,7 @@ Başlıklarda sürüm öneksiz yazılır; `v` öneki künye ve git etiketlerinde
 - Varsayılan sorgunun tüm tablo/kolonları (`L_CAPIWHOUSE`, `STINVTOT`, `ITEMS`, `UNITSETL`) aynı gerçek veritabanına karşı `INFORMATION_SCHEMA.COLUMNS` ile tek tek doğrulandı; hiçbir düzeltme gerekmedi.
 - Ambarlar boş/sıfır geliyordu: bu kurulumda `LG_<firma>_<dönem>_STINVTOT` tablosu hiç güncellenmiyormuş (toplam güncelleme işi çalışmıyor). Aynı kolon yapısına sahip `LV_<firma>_<dönem>_STINVTOT` görünümü gerçek zamanlı veriyi tutuyor — varsayılan sorgu `LG_` yerine `LV_` kullanacak şekilde düzeltildi.
 - Varsayılan sorgudaki `ITEMS.CARDTYPE = 1` (yalnızca "Ticari Mal") filtresi kaldırıldı; artık tüm stok kartı tipleri listeleniyor.
+- Varsayılan sorgudaki sabit `ITEMS.ACTIVE = 0` (yalnızca aktif) filtresi kaldırıldı; sorgu artık her satır için `IsActive` bilgisini döndürüyor, aktif/pasif seçimi ekrandaki "Durum" filtresine taşındı.
 
 ## [0.1.0] - 2026-08-17
 

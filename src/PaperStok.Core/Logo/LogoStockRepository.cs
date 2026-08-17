@@ -43,7 +43,8 @@ public sealed class LogoStockRepository
                 Unit = GetString(reader, "Unit"),
                 OnHand = GetDecimal(reader, "OnHand"),
                 Reserved = GetDecimal(reader, "Reserved"),
-                OnOrder = GetDecimal(reader, "OnOrder")
+                OnOrder = GetDecimal(reader, "OnOrder"),
+                IsActive = GetOptionalBool(reader, "IsActive", defaultValue: true)
             });
         }
 
@@ -74,5 +75,23 @@ public sealed class LogoStockRepository
     {
         var ordinal = reader.GetOrdinal(column);
         return reader.IsDBNull(ordinal) ? 0m : Convert.ToDecimal(reader.GetValue(ordinal));
+    }
+
+    // A profile's custom query template may predate IsActive (added so the
+    // UI can filter active/passive without a re-query) — fall back to
+    // defaultValue instead of throwing when the column isn't in the result set.
+    private static bool GetOptionalBool(SqlDataReader reader, string column, bool defaultValue)
+    {
+        int ordinal;
+        try
+        {
+            ordinal = reader.GetOrdinal(column);
+        }
+        catch (IndexOutOfRangeException)
+        {
+            return defaultValue;
+        }
+
+        return reader.IsDBNull(ordinal) ? defaultValue : Convert.ToInt32(reader.GetValue(ordinal)) != 0;
     }
 }

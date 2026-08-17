@@ -22,7 +22,9 @@
         <Grid Grid.Row="0" Margin="0,0,0,12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="150" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -32,13 +34,15 @@
             <TextBlock Grid.Column="0" Text="Kayıtlı Rapor:" VerticalAlignment="Center" Margin="0,0,8,0" />
             <ComboBox Grid.Column="1" x:Name="ReportCombo" DisplayMemberPath="Name"
                       SelectionChanged="ReportCombo_SelectionChanged" />
-            <Button Grid.Column="3" Content="Yeni" Style="{StaticResource Pa.SecondaryButton}"
+            <TextBlock Grid.Column="2" Text="Durum:" VerticalAlignment="Center" Margin="16,0,8,0" />
+            <ComboBox Grid.Column="3" x:Name="StatusFilterCombo" SelectionChanged="StatusFilterCombo_SelectionChanged" />
+            <Button Grid.Column="5" Content="Yeni" Style="{StaticResource Pa.SecondaryButton}"
                     Click="NewReport_Click" Margin="8,0,0,0" />
-            <Button Grid.Column="4" Content="Kaydet" Style="{StaticResource Pa.SecondaryButton}"
+            <Button Grid.Column="6" Content="Kaydet" Style="{StaticResource Pa.SecondaryButton}"
                     Click="SaveReport_Click" Margin="8,0,0,0" />
-            <Button Grid.Column="5" Content="Farklı Kaydet…" Style="{StaticResource Pa.SecondaryButton}"
+            <Button Grid.Column="7" Content="Farklı Kaydet…" Style="{StaticResource Pa.SecondaryButton}"
                     Click="SaveReportAs_Click" Margin="8,0,0,0" />
-            <Button Grid.Column="6" Content="Sil" Style="{StaticResource Pa.SecondaryButton}"
+            <Button Grid.Column="8" Content="Sil" Style="{StaticResource Pa.SecondaryButton}"
                     Click="DeleteReport_Click" Margin="8,0,0,0" />
         </Grid>
 
