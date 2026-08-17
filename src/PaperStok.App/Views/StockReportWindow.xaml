@@ -1,0 +1,130 @@
+<!--
+  Copyright (c) 2026 PaperAxis. All rights reserved.
+  This file is part of PaperStok.
+-->
+<Window x:Class="PaperStok.App.Views.StockReportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PaperStok — Ambar Raporu"
+        Width="1180" Height="760"
+        MinWidth="960" MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="240" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Kayıtlı rapor seçimi -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Kayıtlı Rapor:" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox Grid.Column="1" x:Name="ReportCombo" DisplayMemberPath="Name"
+                      SelectionChanged="ReportCombo_SelectionChanged" />
+            <Button Grid.Column="3" Content="Yeni" Style="{StaticResource Pa.SecondaryButton}"
+                    Click="NewReport_Click" Margin="8,0,0,0" />
+            <Button Grid.Column="4" Content="Kaydet" Style="{StaticResource Pa.SecondaryButton}"
+                    Click="SaveReport_Click" Margin="8,0,0,0" />
+            <Button Grid.Column="5" Content="Farklı Kaydet…" Style="{StaticResource Pa.SecondaryButton}"
+                    Click="SaveReportAs_Click" Margin="8,0,0,0" />
+            <Button Grid.Column="6" Content="Sil" Style="{StaticResource Pa.SecondaryButton}"
+                    Click="DeleteReport_Click" Margin="8,0,0,0" />
+        </Grid>
+
+        <!-- Ambar grupları + ürün seçimi -->
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource Pa.Paper200}" BorderThickness="1" CornerRadius="6">
+                <DockPanel Margin="12">
+                    <TextBlock DockPanel.Dock="Top" Text="Ambar Grupları" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}" Margin="0,0,0,8">
+                        Birleştirmek istediğiniz ambarlara aynı grup adını yazın (ör. "Geçici Depo" satırına "Merkez" yazarsanız Merkez ile birleşir). Grup adını boş bırakmak o ambarı rapordan çıkarır.
+                    </TextBlock>
+                    <Button DockPanel.Dock="Bottom" Content="Verileri Yenile" Style="{StaticResource Pa.SecondaryButton}"
+                            Click="Refresh_Click" Margin="0,8,0,0" HorizontalAlignment="Left" />
+                    <DataGrid x:Name="MappingGrid" AutoGenerateColumns="False" CanUserAddRows="False"
+                              RowHeaderWidth="0" GridLinesVisibility="Horizontal">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Ambar No" Binding="{Binding WarehouseNo}" IsReadOnly="True" Width="70" />
+                            <DataGridTextColumn Header="Ambar Adı" Binding="{Binding WarehouseName}" IsReadOnly="True" Width="*" />
+                            <DataGridTextColumn Header="Grup Adı" Binding="{Binding GroupName}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="2" Background="White" BorderBrush="{StaticResource Pa.Paper200}" BorderThickness="1" CornerRadius="6">
+                <DockPanel Margin="12">
+                    <TextBlock DockPanel.Dock="Top" Text="Ürünler" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" x:Name="ItemSearchBox" TextChanged="ItemSearchBox_TextChanged"
+                                  ToolTip="Stok kodu veya adına göre ara" Margin="0,0,8,0" />
+                        <Button Grid.Column="1" Content="Tümünü Seç" Style="{StaticResource Pa.SecondaryButton}"
+                                Click="SelectAllItems_Click" Margin="0,0,8,0" />
+                        <Button Grid.Column="2" Content="Temizle" Style="{StaticResource Pa.SecondaryButton}"
+                                Click="ClearItems_Click" />
+                    </Grid>
+                    <ListBox x:Name="ItemsListBox" BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Content="{Binding Display}" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="2" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+        </Grid>
+
+        <!-- Rapor oluştur -->
+        <Grid Grid.Row="2" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" x:Name="BuildReportButton" Content="Raporu Oluştur" Style="{StaticResource Pa.AccentButton}"
+                    Click="BuildReport_Click" />
+            <TextBlock Grid.Column="1" x:Name="StatusText" Text="Önce Verileri Yenile'ye basın." VerticalAlignment="Center" Margin="12,0,0,0" Foreground="{StaticResource Pa.Ink500}" />
+        </Grid>
+
+        <!-- Pivot tablo -->
+        <DataGrid x:Name="PivotGrid" Grid.Row="3" AutoGenerateColumns="False">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ItemName}" Value="TOPLAM">
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="{StaticResource Pa.Navy50}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <!-- Dışa aktarma -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Excel'e Aktar" Style="{StaticResource Pa.SecondaryButton}" Click="ExportExcel_Click" Margin="0,0,8,0" />
+            <Button Content="CSV'ye Aktar" Style="{StaticResource Pa.SecondaryButton}" Click="ExportCsv_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

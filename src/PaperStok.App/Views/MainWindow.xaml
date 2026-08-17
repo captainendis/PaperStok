@@ -22,6 +22,9 @@
                 <Separator />
                 <MenuItem Header="Çı_kış" Click="Exit_Click" />
             </MenuItem>
+            <MenuItem Header="_Raporlar">
+                <MenuItem Header="_Ambar Raporu…" Click="StockReport_Click" />
+            </MenuItem>
             <MenuItem Header="_Yardım">
                 <MenuItem Header="PaperStok _Hakkında" Click="About_Click" />
             </MenuItem>
@@ -57,7 +60,9 @@
 
                 <Button x:Name="PullStockButton" Content="Stokları Çek" Style="{StaticResource Pa.AccentButton}"
                         Click="PullStock_Click" HorizontalAlignment="Stretch" Margin="0,0,0,8" />
-                <ProgressBar x:Name="BusyBar" IsIndeterminate="True" Height="4" Visibility="Collapsed" Margin="0,0,0,16" />
+                <ProgressBar x:Name="BusyBar" IsIndeterminate="True" Height="4" Visibility="Collapsed" Margin="0,0,0,8" />
+                <Button Content="Ambar Raporu…" Style="{StaticResource Pa.SecondaryButton}"
+                        Click="StockReport_Click" HorizontalAlignment="Stretch" Margin="0,0,0,16" />
 
                 <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Pa.Ink500}">
                     <Run Text="🔒" />

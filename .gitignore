@@ -16,3 +16,4 @@ Thumbs.db
 
 ## Portable app runtime data (kullanıcıya özel, repo dışı)
 profiles.json
+reports.json

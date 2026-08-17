@@ -9,8 +9,9 @@ Bir **PaperAxis** ürünüdür. · [paperaxis.com](https://paperaxis.com)
 - Logo Tiger3 Enterprise veritabanına doğrudan (MSSQL) bağlanır; firma/dönem numarasına göre `LG_<firma>_<dönem>_STINVTOT` tablosundan ambar bazlı stok toplamlarını okur.
 - Birden fazla bağlantı profili kaydedebilir (SQL Server veya Windows kimlik doğrulaması); parolalar diskte DPAPI ile şifreli tutulur.
 - Ambar ve stok kodu/adına göre filtreleme, arama.
+- **Ambar Raporu**: birden fazla ambarı aynı raporda görüntüleme, seçtiğiniz ambarları tek bir sütun altında birleştirme (ör. "Geçici Depo" stoğunu "Merkez"e ekleme), ürünleri arayıp seçerek filtreleme; rapor hem her ürün için satır toplamını hem her ambar sütunu için toplamı gösterir. Raporu adlandırıp kaydedip daha sonra tekrar çalıştırabilirsiniz.
 - Excel (.xlsx) ve CSV (;) olarak dışa aktarma.
-- Kurulum gerektirmez: tek `.exe` dosyası olarak dağıtılır, kayıt defterine yazmaz; ayarlar exe ile aynı klasördeki `profiles.json` dosyasında tutulur.
+- Kurulum gerektirmez: tek `.exe` dosyası olarak dağıtılır, kayıt defterine yazmaz; ayarlar exe ile aynı klasördeki `profiles.json` ve `reports.json` dosyalarında tutulur.
 
 ## Salt okunur garantisi
 

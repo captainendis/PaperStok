@@ -238,6 +238,17 @@ public partial class MainWindow : Window
         }
     }
 
+    private void StockReport_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedProfile is not { } profile)
+        {
+            MessageBox.Show(this, "Önce bir bağlantı profili seçin.", "PaperStok", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        new StockReportWindow(profile) { Owner = this }.Show();
+    }
+
     private void About_Click(object sender, RoutedEventArgs e) => new AboutWindow { Owner = this }.ShowDialog();
 
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
